@@ -1,0 +1,20 @@
+a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o
+	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o -o a
+
+Test.o: Test.c
+	gcc -c Test.c
+
+ArrayList.o: ArrayList.c ArrayList.h
+	gcc -c ArrayList.c
+
+Primitives.o: Primitives.c Primitives.h
+	gcc -c Primitives.c
+
+Stack.o: Stack.c Stack.h
+	gcc -c Stack.c
+
+LinkedList.o: LinkedList.c LinkedList.h
+	gcc -c LinkedList.c
+
+BinaryTree.o: BinaryTree.c BinaryTree.h
+	gcc -c BinaryTree.c
