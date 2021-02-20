@@ -6,15 +6,24 @@
 #include "BinaryTree.h"
 #include "Primitives.h"
 
+int comparator(const void* cmpl, const void* cmpr) {
+	return *(int*)cmpl - *(int*)cmpr;
+}
+
 int main() {
-	struct Stack stack = create_Stack(0);
-	for(int i = 0; i < 10; i++)
-		push(&stack, Integer(i));
-	for(int i = 0; i < 10; i++) {
-		void* element = pop(&stack);
-		printf("%d\n", *(int*)element);
-		free(element);
-		element = NULL;
-	}
+	
+	struct ArrayList list = create_ArrayList(10);
+	
+	
+	for(int i = 0; i < list.capacity; i++)
+		add(&list, Integer(rand() % 20));
+
+	sort(&list, comparator);
+
+
+	for(int i = 0; i < list.size; i++)
+		printf("%d ", *(int*)(list.elements[i]));
+	printf("\n");
+	
 	return 0;
 }

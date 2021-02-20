@@ -77,6 +77,12 @@ void* get(struct ArrayList* target, size_t position);
 void* delete(struct ArrayList* target, size_t position);
 
 /*
+	Sorts the ArrayList using the built in qsort function in stdlib.h
+*/
+
+void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const void* cmpr));
+
+/*
 	Deletes all contents of the ArrayList. Sets the size and capacity of the ArrayList to 0
 	and calls free() on all of the elements stored within the ArrayList.
 */

@@ -107,6 +107,19 @@ void* delete(struct ArrayList* target, size_t position) {
 	return ret;
 }
 
+void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const void* cmpr)) {
+	for(size_t i = 0; i < target->size - 1; i++) {
+		size_t min = i;
+		for(size_t j = i + 1; j < target->size; j++) {
+			if((*comparator)(target->elements[j], target->elements[min]) < 0)
+				min = j;
+		}
+		void* swap = target->elements[min];
+		target->elements[min] = target->elements[i];
+		target->elements[i] = swap;
+	}
+}
+
 void clear(struct ArrayList* target) {
 	int i;
 	for(i = 0; i < target->size; i++)
