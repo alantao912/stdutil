@@ -89,7 +89,9 @@ void* get(struct ArrayList* target, size_t position) {
 void* delete(struct ArrayList* target, size_t position) {
 	void* ret = NULL;
 	if(position < target->size) {
-		void** new = calloc(target->capacity - 1, sizeof(void*));	
+		target->capacity--;
+		void** new = calloc(target->capacity, sizeof(void*));
+	
 		size_t j = 0;
 		for(size_t i = 0; i < target->size; i++)
 			if(i != position) {
@@ -97,12 +99,11 @@ void* delete(struct ArrayList* target, size_t position) {
 				j++;
 			} else 
 				ret = target->elements[i];
-		for(;j < target->capacity - 1; j++)
+		target->size--;
+		for(;j < target->capacity; j++)
 			new[j] = NULL;
 		free(target->elements);
 		target->elements = new;
-		target->size--;
-		target->capacity--;
 	}
 	return ret;
 }
@@ -121,8 +122,7 @@ void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const vo
 }
 
 void clear(struct ArrayList* target) {
-	int i;
-	for(i = 0; i < target->size; i++)
+	for(size_t i = 0; i < target->size; i++)
 		free(target->elements[i]);
 	free(target->elements);
 	target->size = 0;
