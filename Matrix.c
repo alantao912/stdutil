@@ -1,5 +1,4 @@
 #include "Matrix.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -10,6 +9,14 @@ struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
 	if(matrix.elements != NULL) {
 		matrix.rows = num_rows;
 		matrix.cols = num_cols;
+		for(size_t i = 0; i < matrix.rows; ++i) {
+			for(size_t j = 0; j < matrix.cols; ++j) {
+				if(i == j)
+					matrix.elements[i * matrix.cols + j] = 1.0f;
+				else
+					matrix.elements[i * matrix.cols + j] = 0;
+			}
+		}
 	}
 	return matrix;
 }
@@ -94,7 +101,5 @@ void fMatrix_print(struct fMatrix* mat) {
 		for(signed char k = 0; k < max_length[i] - length; ++k)
 			printf(" ");
 		printf("%.2f]\n", mat->elements[mat->cols * (i + 1) - 1]);
-
-
 	}
 }
