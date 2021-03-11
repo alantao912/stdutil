@@ -16,9 +16,8 @@ struct LinkedList create_LinkedList(size_t initial_size) {
 
 void append(struct LinkedList* target, void* element) {
 	struct ListNode** iterator = &(target->head);
-	while(*iterator != NULL) {
+	while(*iterator != NULL)
 		iterator = &((*iterator)->next);
-	}
 	*iterator = (struct ListNode*) malloc(sizeof(struct ListNode));
 	(*iterator)->element = element;
 	(*iterator)->next = NULL;
@@ -79,9 +78,8 @@ void reset(struct LinkedList* target) {
 void* detach(struct LinkedList* target, size_t position) {
 	if(position < target->size) {
 		struct ListNode** iterator = &(target->head);
-		for(size_t i = 0; i < position; i++) {
+		for(size_t i = 0; i < position; i++)
 			iterator = &((*iterator)->next);
-		}
 		struct ListNode* new_next = (*iterator)->next;
 		void* ret = (*iterator)->element;
 		*iterator = new_next;

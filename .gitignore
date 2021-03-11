@@ -2,3 +2,4 @@
 *.a
 *.o
 Test.c
+*.bmp
