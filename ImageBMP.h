@@ -4,15 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-static const unsigned int COLORTABLESIZE = 1024, HEADERSIZE = 54;
+#include <string.h>
 
 struct Pixel {
 	unsigned char B, G, R, A;
 };
 
 struct Image_BMP {
-	size_t width, height, BPP;
+	size_t width, height, BPP, header_size, colortable_size;
 	unsigned char *header, *color_table;
 	struct Pixel* pixels;
 };
