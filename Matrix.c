@@ -1,6 +1,7 @@
 #include "Matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <math.h>
 
 struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
@@ -14,7 +15,7 @@ struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
 				if(i == j)
 					matrix.elements[i * matrix.cols + j] = 1.0f;
 				else
-					matrix.elements[i * matrix.cols + j] = 0;
+					matrix.elements[i * matrix.cols + j] = 0.0f;
 			}
 		}
 	}
@@ -68,13 +69,54 @@ struct fMatrix fMatrix_add(struct fMatrix lmat, struct fMatrix rmat) {
 	return sum;
 }
 
+struct fMatrix* createSubMatrix(struct fMatrix* parent, size_t row, size_t col) {
+	struct fMatrix* subMatrix = (struct fMatrix*) malloc(sizeof(struct fMatrix));
+	subMatrix->rows = parent->rows - 1;
+	subMatrix->cols = parent->cols - 1;
+	subMatrix->elements = (float*) malloc(subMatrix->rows * subMatrix->cols * sizeof(float));
+	for(unsigned int i = 0; i < parent->rows; ++i)
+	{
+		if(i == row) continue;
+		int y_offset = 0;
+		if(i > row)
+			y_offset = 1;
+		for(unsigned int j = 0; j < parent->cols; ++j)
+		{
+			if(j == col) continue;	
+			int x_offset = 0;	
+			if(j > col)
+				x_offset = 1;
+			fMatrix_set(subMatrix, i - y_offset, j - x_offset, fMatrix_get(parent, i, j));
+		}
+	}
+	return subMatrix;
+}
+
+float fMatrix_determinant(struct fMatrix* mat) {
+	if(mat->rows != mat->cols)
+		return 0.0f;
+	if(mat->rows == 1)
+		return mat->elements[0];
+	bool isNegative = false;
+	float determinant = 0.0f;
+	for(size_t i = 0; i < mat->cols; ++i)
+	{
+		struct fMatrix* subMatrix = createSubMatrix(mat, 0, i);
+		float term = fMatrix_get(mat, 0, i) * fMatrix_determinant(subMatrix);
+		free(subMatrix);
+
+		if(isNegative)
+			determinant -= term;
+		else
+			determinant += term;
+		isNegative = !isNegative;
+	}
+	return determinant;
+}
+
 void fMatrix_scale(struct fMatrix* mat, float scalar) {
 	for(size_t i = 0; i < mat->cols * mat->rows; ++i) 
 		mat->elements[i] *= scalar;
-}
-
-void fMatrix_invert(struct fMatrix* mat) {
-	
 }
 
 void fMatrix_print(struct fMatrix* mat) {

@@ -19,9 +19,11 @@ struct fMatrix fMatrix_multiply(struct fMatrix lmat, struct fMatrix rmat);
 
 struct fMatrix fMatrix_add(struct fMatrix lmat, struct fMatrix rmat);
 
-void fMatrix_scale(struct fMatrix* mat, float scalar);
+struct fMatrix* createSubMatrix(struct fMatrix* parent, size_t row, size_t col);
 
-void fMatrix_invert(struct fMatrix* mat);
+float fMatrix_determinant(struct fMatrix* mat);
+
+void fMatrix_scale(struct fMatrix* mat, float scalar);
 
 void fMatrix_print(struct fMatrix* mat);
 
