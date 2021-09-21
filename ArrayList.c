@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "ArrayList.h"
 
+static const int DEFAULT_CAPACITY = 10;
+
 struct ArrayList create_ArrayList(size_t initial_capacity) {
 	struct ArrayList new;
 	new.elements = calloc(initial_capacity, sizeof(void*));
@@ -17,13 +19,13 @@ void add(struct ArrayList* target, void* element) {
 		target->elements[target->size] = element;
 		target->size++;
 	} else {
-		void** new = calloc(target->size + 1, sizeof(void*));
+		void** new = calloc(target->capacity * 2, sizeof(void*));
 		for(size_t i = 0; i < target->size; i++)
 			new[i] = target->elements[i];
 		free(target->elements);
 		new[target->size] = element;
 		target->elements = new;		
-		target->capacity++;
+		target->capacity *= 2;
 		target->size++;
 	}	
 }
@@ -59,11 +61,11 @@ size_t capacity(struct ArrayList* target) {
 }
 
 void ensure_capacity(struct ArrayList* target, size_t new_capacity) {
-	if(new_capacity > target->size) {
+	if(new_capacity > target->capacity) {
 		void** new = calloc(new_capacity, sizeof(void*));		
-		for(size_t i = 0; i < target->size; i++)
+		for(size_t i = 0; i < target->size; ++i)
 			new[i] = target->elements[i];
-		for(size_t i = target->size; i < new_capacity; i++)
+		for(size_t i = target->size; i < new_capacity; ++i)
 			new[i] = NULL;
 		free(target->elements);
 		target->elements = new;
@@ -89,21 +91,12 @@ void* get(struct ArrayList* target, size_t position) {
 void* delete(struct ArrayList* target, size_t position) {
 	void* ret = NULL;
 	if(position < target->size) {
-		target->capacity--;
-		void** new = calloc(target->capacity, sizeof(void*));
-	
-		size_t j = 0;
-		for(size_t i = 0; i < target->size; i++)
-			if(i != position) {
-				new[j] = target->elements[i];
-				j++;
-			} else 
-				ret = target->elements[i];
-		target->size--;
-		for(;j < target->capacity; j++)
-			new[j] = NULL;
-		free(target->elements);
-		target->elements = new;
+		ret = target->elements[position];
+		size_t i;
+		for(i = position; i < target->size - 1; ++i)
+			target->elements[i] = target->elements[i + 1];
+		target->elements[i] = NULL;
+		--target->size;
 	}
 	return ret;
 }
@@ -125,6 +118,7 @@ void clear(struct ArrayList* target) {
 	for(size_t i = 0; i < target->size; i++)
 		free(target->elements[i]);
 	free(target->elements);
+	target->elements = (void**)calloc(DEFAULT_CAPACITY, sizeof(void*));
 	target->size = 0;
-	target->capacity = 0;
+	target->capacity = DEFAULT_CAPACITY;
 }
