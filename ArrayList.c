@@ -2,9 +2,18 @@
 #include <stdlib.h>
 #include "ArrayList.h"
 
+
+#ifdef TEST
+	#include <stdio.h>
+#endif
+
 static const int DEFAULT_CAPACITY = 10;
 
 struct ArrayList create_ArrayList(size_t initial_capacity) {
+	#ifdef TEST
+		printf("Created arraylist with initial capacity %d\n", initial_capacity);
+	#endif
+
 	struct ArrayList new;
 	new.elements = calloc(initial_capacity, sizeof(void*));
 	for(size_t i = 0; i < initial_capacity; i++)
@@ -14,7 +23,12 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 	return new;
 }
 
-void add(struct ArrayList* target, void* element) {
+bool add(struct ArrayList* target, void* element) {
+	#ifdef TEST
+		printf("Adding element to arraylist\n");
+	#endif
+	if(!element)
+		return false;
 	if(target->size < target->capacity) {
 		target->elements[target->size] = element;
 		target->size++;
@@ -27,29 +41,34 @@ void add(struct ArrayList* target, void* element) {
 		target->elements = new;		
 		target->capacity *= 2;
 		target->size++;
-	}	
+	}
+	return true;	
 }
 
-void insert(struct ArrayList* target, size_t position, void* element) {
+bool addAt(struct ArrayList* target, size_t position, void* element) {
+	#ifdef TEST
+		printf("Adding element to position %d of arraylist.\n", position);
+	#endif
+
+	if(!element || position >= target->size)
+		return false;
 	if(target->size < target->capacity) {
-		if(position >= target->size)
-			return;
-		for(size_t i = target->size;i > position;i--)
+		for(size_t i = target->size; i > position; --i)
 			target->elements[i] = target->elements[i - 1];
 		target->elements[position] = element;
-		target->size++;
 	} else {
-		void** new = calloc(target->capacity + 1, sizeof(void*));
-		for(size_t i = 0; i < position; i++)
+		void** new = calloc(target->capacity * 2, sizeof(void*));
+		for(size_t i = 0; i < position; ++i)
 			new[i] = target->elements[i];
 		new[position] = element;
-		for(size_t i = position; i < target->size; i++)
+		for(size_t i = position; i < target->size; ++i)
 			new[i + 1] = target->elements[i];
 		free(target->elements);
 		target->elements = new;
-		target->size++;
-		target->capacity++;
+		target->capacity *= 2;
 	}
+	++target->size;
+	return true;
 }
 
 size_t size(struct ArrayList* target) {
@@ -61,6 +80,10 @@ size_t capacity(struct ArrayList* target) {
 }
 
 void ensure_capacity(struct ArrayList* target, size_t new_capacity) {
+	#ifdef TEST
+		printf("Ensured arraylist has capacity %d\n", new_capacity);
+	#endif
+	
 	if(new_capacity > target->capacity) {
 		void** new = calloc(new_capacity, sizeof(void*));		
 		for(size_t i = 0; i < target->size; ++i)
@@ -73,22 +96,30 @@ void ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	}
 }
 
-void set(struct ArrayList* target, size_t position, void* element) {
-	if(element == NULL)
-		return;
-	if(position < target->size) {
-		free(target->elements[position]);
-		target->elements[position] = element;
-	}
+void* set(struct ArrayList* target, size_t position, void* element) {
+	#ifdef TEST
+		printf("Set position %d in arraylist\n", position);
+	#endif
+	if(!element || position >= target->size)
+		return NULL;
+	void* ret = target->elements[position];
+	target->elements[position] = element;
+	return ret;
 }
 
 void* get(struct ArrayList* target, size_t position) {
+	#ifdef TEST
+		printf("Getting index %d of arraylist\n", position);
+	#endif
 	if(position < target->size)
 		return target->elements[position];
 	return NULL;
 }
 
 void* delete(struct ArrayList* target, size_t position) {
+	#ifdef TEST
+		printf("Deleting element %d in arraylist\n", position);
+	#endif
 	void* ret = NULL;
 	if(position < target->size) {
 		ret = target->elements[position];

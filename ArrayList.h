@@ -2,6 +2,7 @@
 #define UTIL_ARRAYLIST_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 /*
 	The 'ArrayList.h' and 'ArrayList.c' files provide the declarations and implementations of
@@ -21,20 +22,20 @@ struct ArrayList {
 struct ArrayList create_ArrayList(size_t initial_capacity);
 
 /*
-	Adds an element to the first available space in the ArrayList.
+	Adds an element to the end of the arraylist.
 
-	If there are no empty indices in the ArrayList, the ArrayList will
-	be resized to capacity + 1, and the new element will be added.
+	If the arraylist is at capacity, it will
+	be resized to 2 * capacity, and the new element will be added.
 */
 
-void add(struct ArrayList* target, void* element);
+bool add(struct ArrayList* target, void* element);
 
 /*
 	Inserts an element to the ArrayList at the specified index. The specified index
 	must be less than the ArrayList's size.
 */
 
-void insert(struct ArrayList* target, size_t position, void* element);
+bool addAt(struct ArrayList* target, size_t position, void* element);
 
 /*
 	Returns the number of elements in the ArrayList.
@@ -59,9 +60,11 @@ void ensure_capacity(struct ArrayList* target, size_t new_capacity);
 /*
 	Assigns the element at index [position] to [element]
 	calls free() on the existing element.
+
+	Returns the data previously stored there
 */
 
-void set(struct ArrayList* target, size_t position, void* element);
+void* set(struct ArrayList* target, size_t position, void* element);
 
 /*
 	Returns the element at index [position] of the ArrayList.

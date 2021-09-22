@@ -1,6 +1,9 @@
 #ifndef UTIL_LINKEDLIST_H
 #define UTIL_LINKEDLIST_H
 
+#include <stdbool.h>
+#include "ArrayList.h"
+
 struct ListNode {
 	void* element;
 	struct ListNode* next;
@@ -16,7 +19,7 @@ struct LinkedList {
 	[initial_size] by creating the necessary list nodes;
 */
 
-struct LinkedList create_LinkedList(size_t initial_size);
+struct LinkedList create_LinkedList(struct ArrayList* array);
 
 /*
 	Creates a new list node with the data specified by [element] and appends it
@@ -30,14 +33,14 @@ void append(struct LinkedList* target, void* element);
 	the position in the linked list specified by [position]
 */
 
-void place(struct LinkedList* target, size_t position, void* element);
+bool place(struct LinkedList* target, size_t position, void* element);
 
 /*
 	Overwrites the data in the list node specified by [position] with the new
 	data [element]
 */
 
-void assign(struct LinkedList* target, size_t position, void* element);
+void* assign(struct LinkedList* target, size_t position, void* element);
 
 /*
 	Returns the number of nodes in the linked list
@@ -60,6 +63,12 @@ void* fetch_data(struct LinkedList* target, size_t index);
 */
 
 void* next(struct LinkedList* target);
+
+/*
+	Returns true if the iterator is not pointing to the last element of the linked list
+*/
+
+bool hasNext(struct LinkedList* target);
 
 /*
 	Resets the iterator to the head of the linked list.

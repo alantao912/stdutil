@@ -19,20 +19,6 @@ void* peek(struct Stack* target) {
 void* pop(struct Stack* target) {
 	if(target->elements.size == 0)
 		return NULL;
-	/*
-	void** new = calloc(target->elements.capacity - 1, sizeof(void*));
-	size_t i;
-	for(i = 0; i < target->elements.size - 1; i++)
-		new[i] = target->elements.elements[i];
-	void* out = target->elements.elements[i];
-	for(; i < target->elements.capacity - 1; i++)
-		new[i] = NULL;
-	free(target->elements.elements);
-	target->elements.elements = new;
-	target->elements.capacity--;
-	target->elements.size--;
-	*/
-	
 	return delete(&(target->elements), target->elements.size - 1);
 }
 
