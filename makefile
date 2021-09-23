@@ -1,5 +1,5 @@
-a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o
-	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o -o a
+a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o
+	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o -o a
 
 Test.o: Test.c
 	gcc -c Test.c
@@ -24,3 +24,7 @@ Matrix.o: Matrix.c Matrix.h
 
 ImageBMP.o: ImageBMP.c ImageBMP.h
 	gcc -c ImageBMP.c
+
+Queue.o: Queue.c Queue.h
+	gcc -c Queue.c
+
