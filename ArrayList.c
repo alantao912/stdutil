@@ -13,7 +13,9 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 	#ifdef TEST
 		printf("Created arraylist with initial capacity %d\n", initial_capacity);
 	#endif
-
+	if(initial_capacity == 0)
+		initial_capacity = DEFAULT_CAPACITY;
+	
 	struct ArrayList new;
 	new.elements = calloc(initial_capacity, sizeof(void*));
 	for(size_t i = 0; i < initial_capacity; i++)

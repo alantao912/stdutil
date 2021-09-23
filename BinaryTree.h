@@ -1,6 +1,8 @@
 #ifndef UTIL_BINARYTREE_H
 #define UTIL_BINARYTREE_H
 
+#include "ArrayList.h"
+
 struct TreeNode {
 	void* data;
 	struct TreeNode* left;
@@ -15,7 +17,31 @@ struct TreeNode {
 	
 */
 
-void extend(struct TreeNode* target, signed char (*comparator)(void* cmpl, void* cmpr), void* element);
+void tree_add(struct TreeNode** target, void* element, signed char (*comparator)(void* cmpl, void* cmpr));
+
+/*
+	Returns the nodes of the tree in an arraylist in preorder.
+*/
+
+struct ArrayList preorderTree(struct TreeNode* target);
+
+/*
+	Returns the nodes of the tree in an arraylist inorder.
+*/
+
+struct ArrayList inorderTree(struct TreeNode* target);
+
+/*
+	Returns the nodes of the tree in an arraylist in postorder.
+*/
+
+struct ArrayList postorderTree(struct TreeNode* target);
+
+/*
+	Returns the nodes of the tree in an arrayist in levelorder.
+*/
+
+struct ArrayList levelorderTree(struct TreeNode* target);
 
 /*
 	Searches the tree for data containing [element]. Returns a pointer to the found data.
@@ -37,6 +63,6 @@ void applyTree(struct TreeNode* target, void (*operation)(void* operand));
 	tree node pointed to by [target] as well as the data stored in the freed nodes.
 */
 
-void destroy(struct TreeNode* target);
+void tree_clear(struct TreeNode* target);
 
 #endif
