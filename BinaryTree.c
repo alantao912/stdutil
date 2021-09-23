@@ -77,7 +77,35 @@ static void postorderHelper(struct TreeNode* target, struct ArrayList* list) {
 }
 
 struct ArrayList levelorderTree(struct TreeNode* target) {
-	return create_ArrayList(1);
+	struct ArrayList data = create_ArrayList(1);
+	if(target) {
+		struct ArrayList node_queue = create_ArrayList(1);
+		add(&node_queue, target);
+		add(&data, target->data);
+
+		char cont;
+		int start = 0;
+
+		do {
+			int front = size(&node_queue);
+			cont = 0;
+			for(int i = start; i < size(&node_queue); ++i) {
+				struct TreeNode* iterator = get(&node_queue, i);
+				if(iterator->left) {
+					add(&data, iterator->left->data);
+					add(&node_queue, iterator->left);
+					cont = 1;
+				}
+				if(iterator->right) {
+					add(&data, iterator->right->data);
+					add(&node_queue, iterator->right);
+					cont = 1;
+				}
+			}
+			start = size(&node_queue) - front;
+		} while(cont == 1);
+	}
+	return data;
 }
 
 void* searchTree(struct TreeNode* target, signed char (*comparator)(void* cmpl, void* cmpr), void* element) {
