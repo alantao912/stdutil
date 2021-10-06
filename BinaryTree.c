@@ -43,7 +43,7 @@ struct ArrayList preorderTree(struct TreeNode* target) {
 static void preorderHelper(struct TreeNode* target, struct ArrayList* list) {
 	if(!target)
 		return;
-	add(list, target->data);
+	al_append(list, target->data);
 	preorderHelper(target->left, list);
 	preorderHelper(target->right, list);
 }
@@ -58,7 +58,7 @@ static void inorderHelper(struct TreeNode* target, struct ArrayList* list) {
 	if(!target)
 		return;
 	inorderHelper(target->left, list);
-	add(list, target->data);
+	al_append(list, target->data);
 	inorderHelper(target->right, list);
 }
 
@@ -73,36 +73,36 @@ static void postorderHelper(struct TreeNode* target, struct ArrayList* list) {
 		return;
 	postorderHelper(target->left, list);
 	postorderHelper(target->right, list);
-	add(list, target->data);
+	al_append(list, target->data);
 }
 
 struct ArrayList levelorderTree(struct TreeNode* target) {
 	struct ArrayList data = create_ArrayList(1);
 	if(target) {
 		struct ArrayList node_queue = create_ArrayList(1);
-		add(&node_queue, target);
-		add(&data, target->data);
+		al_append(&node_queue, target);
+		al_append(&data, target->data);
 
 		char cont;
 		int start = 0;
 
 		do {
-			int front = size(&node_queue);
+			int front = al_size(&node_queue);
 			cont = 0;
-			for(int i = start; i < size(&node_queue); ++i) {
-				struct TreeNode* iterator = get(&node_queue, i);
+			for(int i = start; i < al_size(&node_queue); ++i) {
+				struct TreeNode* iterator = al_get(&node_queue, i);
 				if(iterator->left) {
-					add(&data, iterator->left->data);
-					add(&node_queue, iterator->left);
+					al_append(&data, iterator->left->data);
+					al_append(&node_queue, iterator->left);
 					cont = 1;
 				}
 				if(iterator->right) {
-					add(&data, iterator->right->data);
-					add(&node_queue, iterator->right);
+					al_append(&data, iterator->right->data);
+					al_append(&node_queue, iterator->right);
 					cont = 1;
 				}
 			}
-			start = size(&node_queue) - front;
+			start = al_size(&node_queue) - front;
 		} while(cont == 1);
 	}
 	return data;

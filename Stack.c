@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "Stack.h"
-#include "ArrayList.h"
 
 struct Stack create_Stack(size_t initial_capacity) {
 	struct Stack new;
@@ -9,31 +8,31 @@ struct Stack create_Stack(size_t initial_capacity) {
 }
 
 void push(struct Stack* target, void* element) {
-	add(&(target->elements), element);
+	al_append(&(target->elements), element);
 }
 
 void* peek(struct Stack* target) {
-	return get(&(target->elements), target->elements.size - 1);
+	return al_get(&(target->elements), target->elements.size - 1);
 }
 
 void* pop(struct Stack* target) {
 	if(target->elements.size == 0)
 		return NULL;
-	return delete(&(target->elements), target->elements.size - 1);
+	return al_delete(&(target->elements), target->elements.size - 1);
 }
 
-size_t ssize(struct Stack* target) {
+size_t s_size(struct Stack* target) {
 	return target->elements.size;
 }
 
-size_t scapacity(struct Stack* target) {
+size_t s_capacity(struct Stack* target) {
 	return target->elements.capacity;
 }
 
-void guarantee_capacity(struct Stack* target, size_t new_capacity) {
-	ensure_capacity(&(target->elements), new_capacity);	
+void s_ensure_capacity(struct Stack* target, size_t new_capacity) {
+	al_ensure_capacity(&(target->elements), new_capacity);	
 }
 
-void empty(struct Stack* target) {
-	clear(&(target->elements));	
+void s_clear(struct Stack* target) {
+	al_clear(&(target->elements));	
 }

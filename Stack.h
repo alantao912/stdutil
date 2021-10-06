@@ -15,12 +15,12 @@ void* peek(struct Stack* target);
 
 void* pop(struct Stack* target);
 
-size_t ssize(struct Stack* target);
+size_t s_size(struct Stack* target);
 
-size_t scapacity(struct Stack* target);
+size_t s_capacity(struct Stack* target);
 
-void guarantee_capacity(struct Stack* target, size_t new_capacity);
+void s_ensure_capacity(struct Stack* target, size_t new_capacity);
 
-void empty(struct Stack* target);
+void s_clear(struct Stack* target);
 
 #endif

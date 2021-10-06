@@ -28,20 +28,20 @@ struct ArrayList create_ArrayList(size_t initial_capacity);
 	be resized to 2 * capacity, and the new element will be added.
 */
 
-bool add(struct ArrayList* target, void* element);
+bool al_append(struct ArrayList* target, void* element);
 
 /*
 	Inserts an element to the ArrayList at the specified index. The specified index
 	must be less than the ArrayList's size.
 */
 
-bool addAt(struct ArrayList* target, size_t position, void* element);
+bool al_addAt(struct ArrayList* target, size_t position, void* element);
 
 /*
 	Returns the number of elements in the ArrayList.
 */
 
-size_t size(struct ArrayList* target);
+size_t al_size(struct ArrayList* target);
 
 /*
 	Returns the available capacity of the ArrayList. If the size is equal to the capacity
@@ -49,13 +49,13 @@ size_t size(struct ArrayList* target);
 	and accomodate the new element.
 */
 
-size_t capacity(struct ArrayList* target);
+size_t al_capacity(struct ArrayList* target);
 
 /*
 	Ensures that the ArrayList must be able to contain [new_capacity] number of elements.
 */
 
-void ensure_capacity(struct ArrayList* target, size_t new_capacity);
+void al_ensure_capacity(struct ArrayList* target, size_t new_capacity);
 
 /*
 	Assigns the element at index [position] to [element]
@@ -64,20 +64,20 @@ void ensure_capacity(struct ArrayList* target, size_t new_capacity);
 	Returns the data previously stored there
 */
 
-void* set(struct ArrayList* target, size_t position, void* element);
+void* al_set(struct ArrayList* target, size_t position, void* element);
 
 /*
 	Returns the element at index [position] of the ArrayList.
 */
 
-void* get(struct ArrayList* target, size_t position);
+void* al_get(struct ArrayList* target, size_t position);
 
 /*
 	Removes the element at index [position] of the ArrayList and returns it.
 	It is up to the programmer to call free() the returned pointer.
 */
 
-void* delete(struct ArrayList* target, size_t position);
+void* al_delete(struct ArrayList* target, size_t position);
 
 /*
 	Sorts the ArrayList using the built in qsort function in stdlib.h
@@ -90,6 +90,6 @@ void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const vo
 	and calls free() on all of the elements stored within the ArrayList.
 */
 
-void clear(struct ArrayList* target);
+void al_clear(struct ArrayList* target);
 
 #endif

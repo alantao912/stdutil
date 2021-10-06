@@ -26,33 +26,33 @@ struct LinkedList create_LinkedList(struct ArrayList* array);
 	to the end of the linked list.
 */
 
-void append(struct LinkedList* target, void* element);
+void ll_append(struct LinkedList* target, void* element);
 
 /*
 	Inserts a new list node with the data specified by [element] and inserts it to
 	the position in the linked list specified by [position]
 */
 
-bool place(struct LinkedList* target, size_t position, void* element);
+bool ll_addAt(struct LinkedList* target, size_t position, void* element);
 
 /*
 	Overwrites the data in the list node specified by [position] with the new
 	data [element]
 */
 
-void* assign(struct LinkedList* target, size_t position, void* element);
+void* ll_set(struct LinkedList* target, size_t position, void* element);
 
 /*
 	Returns the number of nodes in the linked list
 */
 
-size_t length(struct LinkedList* target);
+size_t ll_size(struct LinkedList* target);
 
 /*
 	Returns a pointer to the data stored in the list node specified by [index]
 */
 
-void* fetch_data(struct LinkedList* target, size_t index);
+void* ll_get(struct LinkedList* target, size_t index);
 
 /*
 	Returns the data stored in the list node that the iterator was originally pointing at
@@ -80,13 +80,13 @@ void reset(struct LinkedList* target);
 	Deletes the list node specified by [position] and returns the data stored by that list node.
 */
 
-void* detach(struct LinkedList* target, size_t position);
+void* ll_delete(struct LinkedList* target, size_t position);
 
 /*
 	Destroys the entire linked list, while freeing all the data that the linked list stored.
 */
 
-void clean(struct LinkedList* target);
+void ll_clear(struct LinkedList* target);
 
 /*
 	Attaches the linked list [right_chain] to the end of the linked list [left_chain]

@@ -25,7 +25,7 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 	return new;
 }
 
-bool add(struct ArrayList* target, void* element) {
+bool al_append(struct ArrayList* target, void* element) {
 	#ifdef TEST
 		printf("Adding element to arraylist\n");
 	#endif
@@ -47,7 +47,7 @@ bool add(struct ArrayList* target, void* element) {
 	return true;	
 }
 
-bool addAt(struct ArrayList* target, size_t position, void* element) {
+bool al_addAt(struct ArrayList* target, size_t position, void* element) {
 	#ifdef TEST
 		printf("Adding element to position %d of arraylist.\n", position);
 	#endif
@@ -73,15 +73,15 @@ bool addAt(struct ArrayList* target, size_t position, void* element) {
 	return true;
 }
 
-size_t size(struct ArrayList* target) {
+size_t al_size(struct ArrayList* target) {
 	return target->size;
 }
 
-size_t capacity(struct ArrayList* target) {
+size_t al_capacity(struct ArrayList* target) {
 	return target->capacity;
 }
 
-void ensure_capacity(struct ArrayList* target, size_t new_capacity) {
+void al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	#ifdef TEST
 		printf("Ensured arraylist has capacity %d\n", new_capacity);
 	#endif
@@ -98,7 +98,7 @@ void ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	}
 }
 
-void* set(struct ArrayList* target, size_t position, void* element) {
+void* al_set(struct ArrayList* target, size_t position, void* element) {
 	#ifdef TEST
 		printf("Set position %d in arraylist\n", position);
 	#endif
@@ -109,7 +109,7 @@ void* set(struct ArrayList* target, size_t position, void* element) {
 	return ret;
 }
 
-void* get(struct ArrayList* target, size_t position) {
+void* al_get(struct ArrayList* target, size_t position) {
 	#ifdef TEST
 		printf("Getting index %d of arraylist\n", position);
 	#endif
@@ -118,7 +118,7 @@ void* get(struct ArrayList* target, size_t position) {
 	return NULL;
 }
 
-void* delete(struct ArrayList* target, size_t position) {
+void* al_delete(struct ArrayList* target, size_t position) {
 	#ifdef TEST
 		printf("Deleting element %d in arraylist\n", position);
 	#endif
@@ -147,7 +147,7 @@ void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const vo
 	}
 }
 
-void clear(struct ArrayList* target) {
+void al_clear(struct ArrayList* target) {
 	for(size_t i = 0; i < target->size; i++)
 		free(target->elements[i]);
 	free(target->elements);
