@@ -80,7 +80,11 @@ void* al_get(struct ArrayList* target, size_t position);
 void* al_delete(struct ArrayList* target, size_t position);
 
 /*
-	Sorts the ArrayList using the built in qsort function in stdlib.h
+	Sorts the ArrayList using the quick sort algorithm. The programmer must provide a function for comparing two generic elements.
+
+	The comparator function must return a negative number if cmpl < cmpr,
+	a positive number if cmpl > cmpr,
+	and 0 if cmpl == cmpr.
 */
 
 void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const void* cmpr));

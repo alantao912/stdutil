@@ -1,9 +1,21 @@
-#include "HashMap.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include "HashMap.h"
 
 static void resize(struct HashMap* map);
+
+struct HashMap create_HashMap(size_t initial_capacity, float lf) {
+	struct HashMap hm;
+	hm.table = (struct MapEntry**) calloc(initial_capacity, sizeof(struct MapEntry*));
+	hm.capacity = initial_capacity;
+	hm.size = 0;
+	hm.load_factor = lf;
+	hm.hash_function = &default_hash_function;
+	return hm;
+}
 
 void* hm_put(struct HashMap* map, void* key, void* value) {
 	
@@ -17,6 +29,7 @@ void* hm_put(struct HashMap* map, void* key, void* value) {
 		size_t index = (map->hash_function(key) + i) % map->capacity;
 		if (!map->table[index]) {
 			if (foundRemoved) {
+				// free this line
 				void* value = map->table[removedIndex]->value;
 				map->table[removedIndex]->value = value;
 				free(map->table[removedIndex]->key);
@@ -29,19 +42,27 @@ void* hm_put(struct HashMap* map, void* key, void* value) {
 			}
 			return NULL;
 		} else if (map->comparator(key, map->table[index]->key)) {
-			if (foundRemoved || !map->table[index]->removed) {
+			if (!map->table[index]->removed) {
 				void* value = map->table[index]->value;
 				map->table[index]->value = value;
 				free(map->table[index]->key);
 				map->table[index]->key = key;
 				return value;
+			} else if (foundRemoved) {
+				free(map->table[removedIndex]->key);
+				map->table[removedIndex]->key = key;
+				free(map->table[removedIndex]->value);
+				map->table[removedIndex]->value = value;
+				map->table[removedIndex]->removed = false;
 			} else {
+				free(map->table[index]->key);
 				map->table[index]->key = key;
+				free(map->table[index]->value);
 				map->table[index]->value = value;
 				map->table[index]->removed = false;
-				++map->size;
-				return NULL;
 			}
+			++map->size;
+			return NULL;
 		} else if (map->table[index]->removed) {
 			removedIndex = index;
 			foundRemoved = true;
@@ -125,8 +146,11 @@ struct ArrayList values(struct HashMap* map) {
 	return valueSet;
 }
 
+static const unsigned int a = 48339, W = 97, M = UINT_MAX;
+
 size_t default_hash_function(void* key) {
-	return (size_t) key;
+	unsigned int hash = (unsigned int)key;
+	return (size_t) floor(((a * hash) % W) * (M / W));
 }
 
 static void resize(struct HashMap* map) {
