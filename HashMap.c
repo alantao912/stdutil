@@ -99,6 +99,32 @@ bool hm_containsKey(struct HashMap* map, void* key) {
 	return hm_get(map, key) != NULL;
 }
 
+struct ArrayList keySet(struct HashMap* map) {
+	struct ArrayList keySet = create_ArrayList(map->size);
+	size_t i = 0, j = 0;
+	while (i < map->capacity && j < map->size) {
+		if (map->table[i] && !map->table[i]->removed) {
+			al_append(&keySet, map->table[i]->key);
+			++j;
+		}
+		++i;
+	}
+	return keySet;
+}
+
+struct ArrayList values(struct HashMap* map) {
+	struct ArrayList valueSet = create_ArrayList(map->size);
+	size_t i = 0, j = 0;
+	while (i < map->capacity && j < map->size) {
+		if (map->table[i] && !map->table[i]->removed) {
+			al_append(&valueSet, map->table[i]->value);
+			++j;
+		}
+		++i;
+	}
+	return valueSet;
+}
+
 size_t default_hash_function(void* key) {
 	return (size_t) key;
 }

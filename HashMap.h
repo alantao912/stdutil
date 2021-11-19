@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "ArrayList.h"
 
 struct MapEntry {
 	void* key;
@@ -28,6 +29,10 @@ void* hm_remove(struct HashMap* map, void* key);
 void* hm_get(struct HashMap* map, void* key);
 
 bool hm_containsKey(struct HashMap* map, void* key);
+
+struct ArrayList keySet(struct HashMap* map);
+
+struct ArrayList values(struct HashMap* map);
 
 size_t default_hash_function(void* key);
 

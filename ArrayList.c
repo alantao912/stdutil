@@ -29,13 +29,13 @@ bool al_append(struct ArrayList* target, void* element) {
 	#ifdef TEST
 		printf("Adding element to arraylist\n");
 	#endif
-	if(!element)
-		return false;
 	if(target->size < target->capacity) {
 		target->elements[target->size] = element;
 		target->size++;
 	} else {
 		void** new = calloc(target->capacity * 2, sizeof(void*));
+		if (!new)
+			return false;
 		for(size_t i = 0; i < target->size; i++)
 			new[i] = target->elements[i];
 		free(target->elements);
@@ -52,7 +52,7 @@ bool al_addAt(struct ArrayList* target, size_t position, void* element) {
 		printf("Adding element to position %d of arraylist.\n", position);
 	#endif
 
-	if(!element || position >= target->size)
+	if(position >= target->size)
 		return false;
 	if(target->size < target->capacity) {
 		for(size_t i = target->size; i > position; --i)
@@ -60,6 +60,8 @@ bool al_addAt(struct ArrayList* target, size_t position, void* element) {
 		target->elements[position] = element;
 	} else {
 		void** new = calloc(target->capacity * 2, sizeof(void*));
+		if (!new)
+			return false;
 		for(size_t i = 0; i < position; ++i)
 			new[i] = target->elements[i];
 		new[position] = element;
@@ -81,13 +83,15 @@ size_t al_capacity(struct ArrayList* target) {
 	return target->capacity;
 }
 
-void al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
+bool al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	#ifdef TEST
 		printf("Ensured arraylist has capacity %d\n", new_capacity);
 	#endif
 	
 	if(new_capacity > target->capacity) {
-		void** new = calloc(new_capacity, sizeof(void*));		
+		void** new = calloc(new_capacity, sizeof(void*));
+		if (!new)
+			return false;		
 		for(size_t i = 0; i < target->size; ++i)
 			new[i] = target->elements[i];
 		for(size_t i = target->size; i < new_capacity; ++i)
@@ -95,14 +99,16 @@ void al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 		free(target->elements);
 		target->elements = new;
 		target->capacity = new_capacity;
+		return true;
 	}
+	return false;
 }
 
 void* al_set(struct ArrayList* target, size_t position, void* element) {
 	#ifdef TEST
 		printf("Set position %d in arraylist\n", position);
 	#endif
-	if(!element || position >= target->size)
+	if(position >= target->size)
 		return NULL;
 	void* ret = target->elements[position];
 	target->elements[position] = element;

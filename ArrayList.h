@@ -55,7 +55,7 @@ size_t al_capacity(struct ArrayList* target);
 	Ensures that the ArrayList must be able to contain [new_capacity] number of elements.
 */
 
-void al_ensure_capacity(struct ArrayList* target, size_t new_capacity);
+bool al_ensure_capacity(struct ArrayList* target, size_t new_capacity);
 
 /*
 	Assigns the element at index [position] to [element]
