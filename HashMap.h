@@ -29,4 +29,6 @@ void* hm_get(struct HashMap* map, void* key);
 
 bool hm_containsKey(struct HashMap* map, void* key);
 
+size_t default_hash_function(void* key);
+
 #endif
