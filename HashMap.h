@@ -21,10 +21,12 @@ struct HashMap {
 	bool (*comparator)(void* key0, void* key1);
 };
 
-void* put(struct HashMap* map, void* key, void* value);
+void* hm_put(struct HashMap* map, void* key, void* value);
 
-void* remove(struct HashMap* map, void* key);
+void* hm_remove(struct HashMap* map, void* key);
 
-void* get(struct HashMap* map, void* key);
+void* hm_get(struct HashMap* map, void* key);
+
+bool hm_containsKey(struct HashMap* map, void* key);
 
 #endif

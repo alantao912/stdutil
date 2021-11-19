@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void* put(struct HashMap* map, void* key, void* value) {
+void* hm_put(struct HashMap* map, void* key, void* value) {
 	size_t i = 0, j = 0, removedIndex;
 	bool foundRemoved = false;
 	while (i < map->capacity && j < map->size) {
@@ -46,7 +46,7 @@ void* put(struct HashMap* map, void* key, void* value) {
 	return NULL;
 }
 
-void* remove(struct HashMap* map, void* key) {
+void* hm_remove(struct HashMap* map, void* key) {
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		size_t index = (map->hash_function(key) + i) % map->capacity;
@@ -68,7 +68,7 @@ void* remove(struct HashMap* map, void* key) {
 	return NULL;	
 }
 
-void* get(struct HashMap* map, void* key) {
+void* hm_get(struct HashMap* map, void* key) {
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		size_t index = (map->hash_function(key) + i) % map->capacity;
@@ -86,4 +86,8 @@ void* get(struct HashMap* map, void* key) {
 		++i;
 	}
 	return NULL;
+}
+
+bool hm_containsKey(struct HashMap* map, void* key) {
+	return hm_get(map, key) != NULL;
 }
