@@ -84,7 +84,7 @@ void* al_delete(struct ArrayList* target, size_t position);
 
 	The comparator function must return a negative number if cmpl < cmpr,
 	a positive number if cmpl > cmpr,
-	and 0 if cmpl == cmpr.
+	and 0 if cmpl == cmpr
 */
 
 void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const void* cmpr));

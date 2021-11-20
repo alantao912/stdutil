@@ -5,23 +5,24 @@ struct Image_BMP openImageBMP(const char* path)
 	struct Image_BMP image = {.width = 0, .height = 0, .header = NULL, .color_table = NULL, .pixels = NULL};
 	FILE* img = fopen(path, "rb");
 
-	if(img != NULL) 
+	if (img != NULL) 
 	{
 		
 		image.header_size = 54;
 		image.header = (unsigned char*) malloc(image.header_size * sizeof(unsigned char));
 
-		if(image.header == NULL)
+		if (image.header == NULL) {
 			return image;
+		}
 
 
 		fread(image.header, sizeof(unsigned char), image.header_size, img);
 		image.header_size += *(int*) &image.header[14] - 40;
 
-		if(image.header_size > 54)
+		if (image.header_size > 54)
 		{
 			unsigned char *new_mem = (char*) realloc(image.header, image.header_size * sizeof(unsigned char));
-			if(new_mem == NULL)
+			if (new_mem == NULL)
 			{
 				free(image.header);
 				image.header = NULL;
@@ -41,14 +42,16 @@ struct Image_BMP openImageBMP(const char* path)
 
 		{
 			unsigned int compression = *(int*) &image.header[30];
-			if(compression == 3)
+			if (compression == 3) {
 				image.colortable_size += 12;
-			else if(compression == 6)
+			}
+			else if (compression == 6) {
 				image.colortable_size += 16;
+			}
 		}
 
 		image.color_table = (unsigned char*) malloc(image.colortable_size * sizeof(unsigned char));
-		if(image.color_table == NULL) 
+		if (image.color_table == NULL) 
 		{
 			free(image.header);
 			image.header = NULL;
@@ -63,7 +66,8 @@ struct Image_BMP openImageBMP(const char* path)
 
 
 		image.pixels = (struct Pixel*) malloc(image.width * image.height * sizeof(struct Pixel));
-		if(image.pixels == NULL) {
+		if (image.pixels == NULL)
+		{
 			free(image.header);
 			image.header = NULL;
 			image.header_size = 0;
