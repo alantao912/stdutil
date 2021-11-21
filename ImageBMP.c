@@ -1,87 +1,72 @@
 #include "ImageBMP.h"
 
+static const size_t FILE_HEADER_SIZE = 14;
+
 struct Image_BMP openImageBMP(const char* path) 
 {
-	struct Image_BMP image = {.width = 0, .height = 0, .header = NULL, .color_table = NULL, .pixels = NULL};
+	struct Image_BMP image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL};
 	FILE* img = fopen(path, "rb");
-
-	if (img != NULL) 
-	{
-		
-		image.header_size = 54;
-		image.header = (unsigned char*) malloc(image.header_size * sizeof(unsigned char));
-
-		if (image.header == NULL) {
+	if (img) {
+		image.file_header = (unsigned char*) malloc(FILE_HEADER_SIZE * sizeof(unsigned char));
+		if (!image.file_header) {
 			return image;
 		}
-
-
-		fread(image.header, sizeof(unsigned char), image.header_size, img);
-		image.header_size += *(int*) &image.header[14] - 40;
-
-		if (image.header_size > 54)
-		{
-			unsigned char *new_mem = (char*) realloc(image.header, image.header_size * sizeof(unsigned char));
-			if (new_mem == NULL)
-			{
-				free(image.header);
-				image.header = NULL;
-				image.header_size = 0;
-				return image;
-			}
-			image.header = new_mem;
-			unsigned int nmemb = *(int*) &image.header[14] - 40;
-			fread(&(image.header[54]), sizeof(unsigned char), nmemb, img);
-		}
 		
-
-		image.width = *(int*) &image.header[18];
-		image.height = *(int*) &image.header[22];
-		image.BPP = *(short*) &image.header[28];
-		image.colortable_size = 4 * (*(int*) &image.header[46]);
-
-		{
-			unsigned int compression = *(int*) &image.header[30];
-			if (compression == 3) {
-				image.colortable_size += 12;
-			}
-			else if (compression == 6) {
-				image.colortable_size += 16;
-			}
-		}
-
-		image.color_table = (unsigned char*) malloc(image.colortable_size * sizeof(unsigned char));
-		if (image.color_table == NULL) 
-		{
-			free(image.header);
-			image.header = NULL;
-			image.header_size = 0;
-			image.colortable_size = 0;
-			image.width = 0;
-			image.height = 0;
-			image.BPP = 0;
+		int n = fread(image.file_header, sizeof(unsigned char), FILE_HEADER_SIZE, img);
+		if (n != FILE_HEADER_SIZE) {
+			free(image.file_header);
+			image.file_header = NULL;
 			return image;
 		}
-		fread(image.color_table, sizeof(unsigned char), image.colortable_size, img);
-
+		
+		int pixel_array_offset = *(int*)&image.file_header[10];
+		image.bitmap_header = (unsigned char*) malloc((pixel_array_offset - FILE_HEADER_SIZE) * sizeof(unsigned char));
+		if (!image.bitmap_header) {
+			free(image.file_header);
+			image.file_header = NULL;
+			return image;
+		}
+		
+		n = fread(image.bitmap_header, sizeof(unsigned char), pixel_array_offset - FILE_HEADER_SIZE, img);
+		if (n != pixel_array_offset - FILE_HEADER_SIZE) {
+			free(image.file_header);
+			image.file_header = NULL;
+			free(image.bitmap_header);
+			image.bitmap_header = NULL;
+			return image;
+		}
+		image.width = *(int*)&image.bitmap_header[4];
+		image.height = *(int*)&image.bitmap_header[8];
 
 		image.pixels = (struct Pixel*) malloc(image.width * image.height * sizeof(struct Pixel));
-		if (image.pixels == NULL)
-		{
-			free(image.header);
-			image.header = NULL;
-			image.header_size = 0;
-			free(image.color_table);
-			image.color_table = NULL;
-			image.colortable_size = 0;
-	
-			image.width = 0;
-			image.height = 0;
-			image.BPP = 0;
+		if (!image.pixels) {
+			free(image.file_header);
+			image.file_header = NULL;
+			free(image.bitmap_header);
+			image.bitmap_header = NULL;
 			return image;
 		}
-		for(unsigned int i = 0; i < image.width * image.height; ++i)
-			fread(&(image.pixels[i]), image.BPP/8, 1, img);
+		short bpp = *(short*)&image.bitmap_header[14];
+		long int padding = ceil(bpp * image.width / 32.0) * 4 - image.width * bpp /  8;
+		for (size_t row = 0; row < image.height; ++row) {
+			for (size_t col = 0; col < image.width; ++col) {
+				unsigned char *pixel_component = (unsigned char*) &image.pixels[row * image.width + col];
+				n = fread(pixel_component, sizeof(unsigned char), bpp / 8, img);
+				if (n != bpp / 8) {
+					free(image.file_header);
+					image.file_header = NULL;
+					free(image.bitmap_header);
+					image.bitmap_header = NULL;
+					free(image.pixels);
+					image.pixels = NULL;
+					image.width = 0;
+					image.height = 0;
+					return image;
+				}
+			}
+			fseek(img, padding, SEEK_CUR);
+		}
+		
 	}
 	return image;
 }
@@ -94,41 +79,80 @@ struct Pixel* getPixelAt(struct Image_BMP* image, unsigned int col, unsigned int
 
 bool save_ImageBMP(struct Image_BMP* image, const char* location) {
 	FILE* dest = fopen(location, "wb");
-	if(image->header == NULL || (image->colortable_size > 0 && image->color_table == NULL) || image->pixels == NULL || dest == NULL)
+	if (!dest) {
 		return false;
-
-	fwrite(image->header, sizeof(unsigned char), image->header_size, dest);
-
-
-	fwrite(image->color_table, sizeof(unsigned char), image->colortable_size, dest);
+	}
+	fwrite(image->file_header, sizeof(unsigned char), FILE_HEADER_SIZE, dest);
+	fwrite(image->bitmap_header, sizeof(unsigned char), *(int*)&image->bitmap_header[0], dest);
 	
-	for(unsigned int i = 0; i < image->width * image->height; ++i)
-		fwrite(&(image->pixels[i]), image->BPP/8, 1, dest);
-
-	unsigned int padding_size = 4 - ((image->BPP/8) * image->width % 4);
-	if(padding_size == 4)
-		padding_size = 0;
-
-	unsigned char* padding = (unsigned char*) malloc(padding_size);
-	memset(padding, 0, padding_size);
-
-	fwrite(padding, padding_size, image->height, dest);
-	free(padding);	
+	short bpp = *(short*)&image->bitmap_header[14];
 	
+	size_t padding = ceil(bpp * image->width / 32.0) * 4 - image->width * bpp /  8;
+	unsigned char *buffer = (unsigned char*) malloc(padding * sizeof(unsigned char));
+	for (size_t i = 0; i < padding; ++i) {
+		buffer[i] = 0;
+	}
+
+	for (size_t row = 0; row < image->height; ++row) {
+		for (size_t col = 0; col < image->width; ++col) {
+			unsigned char *pixel = (unsigned char*)&image->pixels[row * image->width + col];
+			fwrite(pixel, sizeof(unsigned char), bpp / 8, dest);	
+		}
+		fwrite(buffer, sizeof(unsigned char), padding, dest);
+	}
 	return true;
 }
 
 void dispose_ImageBMP(struct Image_BMP* image) {
 	image->width = 0;
 	image->height = 0;
-	image->BPP = 0;
-	image->header_size = 0;
-	image->colortable_size = 0;
-	
-	free(image->header);
-	image->header = NULL;
-	free(image->color_table);
-	image->color_table = NULL;
+	free(image->file_header);
+	image->file_header = NULL;
+	free(image->bitmap_header);
+	image->bitmap_header = NULL;
 	free(image->pixels);
-	image->pixels = NULL;	
+	image->pixels = NULL;
+}
+
+int main() {
+	struct Image_BMP tank = openImageBMP("C:\\Users\\Alan Tao\\Pictures\\pictures\\tank.bmp");
+	for (size_t row = 0; row < tank.height; ++row) {
+		for (size_t col = 0; col < tank.width; ++col) {
+			if ((row + col) % 2 == 0) {
+				struct Pixel *p = getPixelAt(&tank, col, row);
+				p->R ^= 255;
+				p->G ^= 255;
+				p->B ^= 255;
+			}	
+		}
+	}
+	save_ImageBMP(&tank, "C:\\Users\\Alan Tao\\Pictures\\pictures\\tank1.bmp");
+	dispose_ImageBMP(&tank);
+	tank = openImageBMP("C:\\Users\\Alan Tao\\Pictures\\pictures\\bmp.bmp");
+	for (size_t row = 0; row < tank.height; ++row) {
+		for (size_t col = 0; col < 5 * row && col < tank.width; ++col) {
+			{
+				struct Pixel *p = getPixelAt(&tank, col, row);
+				p->R ^= 255;
+				p->G ^= 255;
+				p->B ^= 255;
+			}	
+		}
+	}
+	save_ImageBMP(&tank, "C:\\Users\\Alan Tao\\Pictures\\pictures\\bmp1.bmp");
+	dispose_ImageBMP(&tank);
+	tank = openImageBMP("C:\\Users\\Alan Tao\\Pictures\\pictures\\vehicle.bmp");
+	for (size_t row = 0; row < tank.height; ++row) {
+		for (size_t col = 0; col < tank.width; ++col) {
+			if ((row + col) % 2 == 0) {
+				struct Pixel *p = getPixelAt(&tank, col, row);
+				p->R ^= 255;
+				p->G ^= 255;
+				p->B ^= 255;
+			}	
+		}
+	}
+	save_ImageBMP(&tank, "C:\\Users\\Alan Tao\\Pictures\\pictures\\vehicle1.bmp");
+	dispose_ImageBMP(&tank);
+	return 0;
 }

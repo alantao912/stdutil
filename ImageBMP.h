@@ -5,14 +5,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 struct Pixel {
-	unsigned char B, G, R, A;
+	unsigned char R, G, B, A;
 };
 
 struct Image_BMP {
-	size_t width, height, BPP, header_size, colortable_size;
-	unsigned char *header, *color_table;
+	size_t width, height;
+	unsigned char *file_header, *bitmap_header;
 	struct Pixel* pixels;
 };
 
