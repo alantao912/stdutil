@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include "Matrix.h"
 
 struct Pixel {
 	unsigned char R, G, B, A;
@@ -24,5 +25,7 @@ struct Pixel* getPixelAt(struct Image_BMP* image, unsigned int col, unsigned int
 bool save_ImageBMP(struct Image_BMP* image, const char* location);
 
 void dispose_ImageBMP(struct Image_BMP* image);
+
+struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel);
 
 #endif

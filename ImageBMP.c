@@ -1,4 +1,5 @@
 #include "ImageBMP.h"
+#include <string.h>
 
 static const size_t FILE_HEADER_SIZE = 14;
 
@@ -112,4 +113,83 @@ void dispose_ImageBMP(struct Image_BMP* image) {
 	image->bitmap_header = NULL;
 	free(image->pixels);
 	image->pixels = NULL;
+}
+
+struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
+	struct Image_BMP convolved_image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL};
+
+	if (kernel->rows % 2 == 0 || kernel->cols % 2 == 0) {
+		return convolved_image;
+	}
+	
+	convolved_image.file_header = (unsigned char*) malloc(FILE_HEADER_SIZE * sizeof(unsigned char));
+	if (!convolved_image.file_header) {
+		return convolved_image;
+	}
+
+	convolved_image.width = image->width;
+	convolved_image.height = image->height;
+	memcpy(convolved_image.file_header, image->file_header, FILE_HEADER_SIZE * sizeof(unsigned char));
+
+	int pixel_array_offset = *(int*)&image->file_header[10];
+	convolved_image.bitmap_header = (unsigned char*) malloc((pixel_array_offset - FILE_HEADER_SIZE) * sizeof(unsigned char));
+	
+	if (!convolved_image.bitmap_header) {
+		free(convolved_image.file_header);
+		convolved_image.file_header = NULL;
+		convolved_image.width = 0;
+	convolved_image.height = 0;
+		return convolved_image;
+	}
+	memcpy(convolved_image.bitmap_header, image->bitmap_header, (pixel_array_offset - FILE_HEADER_SIZE) * sizeof(unsigned char));
+	
+	short bpp = *(short*)&image->bitmap_header[14];
+	
+	convolved_image.pixels = (struct Pixel*) malloc(convolved_image.width * convolved_image.height * sizeof(struct Pixel));
+	if (!convolved_image.pixels) {
+		free(convolved_image.file_header);
+		convolved_image.file_header = NULL;
+		free(convolved_image.bitmap_header);
+		convolved_image.bitmap_header = NULL;
+		convolved_image.width = 0;
+		convolved_image.height = 0;
+		return convolved_image;
+	}
+	memset(convolved_image.pixels, 255, convolved_image.width * convolved_image.height * sizeof(struct Pixel));
+	printf("starting convolution\n");
+	
+	float *accumulator = (float*) malloc(bpp * sizeof(float) / 8);
+	
+	for (int row = 0; row < image->height; ++row)
+	{
+		for (int col = 0; col < image->width; ++col)
+		{
+			for (int i = 0; i < bpp / 8; ++i) {
+				accumulator[i] = 0.0f;
+			}
+			
+			for (int i = 0; i < kernel->rows; ++i)
+			{
+				for (int j = 0; j < kernel->cols; ++j)
+				{
+					int adjusted_row = row + i - (kernel->rows / 2);
+					int adjusted_col = col + j - (kernel->cols / 2);
+					if (adjusted_row >= 0 && adjusted_row < image->height && adjusted_col >= 0 && adjusted_col < image->width)
+ 					{
+						unsigned char *src_pixel = (unsigned char*) getPixelAt(image, adjusted_col, adjusted_row);
+						for (int k = 0; k < bpp / 8; ++k) {
+							accumulator[k] += src_pixel[k] * fMatrix_get(kernel, i, j);
+						}
+					}
+				}	
+			}
+			unsigned char *dest_pixel = (unsigned char*) getPixelAt(&convolved_image, col, row);
+			for (int i = 0; i < bpp / 8; ++i) {
+				dest_pixel[i] = accumulator[i];
+			}
+
+		}
+	}
+	printf("Finished convolution\n");
+	return convolved_image;
 }
