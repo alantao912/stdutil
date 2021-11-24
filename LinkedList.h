@@ -5,12 +5,12 @@
 #include "ArrayList.h"
 
 struct ListNode {
-	void* element;
-	struct ListNode* next;
+	void *element;
+	struct ListNode *next;
 };
 
 struct LinkedList {
-	struct ListNode* head, *iterator;
+	struct ListNode *head, *iterator, *tail;
 	size_t size;
 };
 
@@ -19,21 +19,27 @@ struct LinkedList {
 	[initial_size] by creating the necessary list nodes;
 */
 
-struct LinkedList create_LinkedList(struct ArrayList* array);
+struct LinkedList array_to_linkedlist(void **array, size_t size);
+
+/*
+	Creates a new list node with the specified data and prepends it to the front of the linked list.
+*/
+
+void add_first(struct LinkedList* target, void* element);
 
 /*
 	Creates a new list node with the data specified by [element] and appends it
 	to the end of the linked list.
 */
 
-void ll_append(struct LinkedList* target, void* element);
+void add_last(struct LinkedList* target, void* element);
 
 /*
 	Inserts a new list node with the data specified by [element] and inserts it to
 	the position in the linked list specified by [position]
 */
 
-bool ll_addAt(struct LinkedList* target, size_t position, void* element);
+void ll_addAt(struct LinkedList* target, size_t position, void* element);
 
 /*
 	Overwrites the data in the list node specified by [position] with the new
@@ -80,7 +86,7 @@ void reset(struct LinkedList* target);
 	Deletes the list node specified by [position] and returns the data stored by that list node.
 */
 
-void* ll_delete(struct LinkedList* target, size_t position);
+void* ll_remove(struct LinkedList* target, size_t position);
 
 /*
 	Destroys the entire linked list, while freeing all the data that the linked list stored.
@@ -89,17 +95,19 @@ void* ll_delete(struct LinkedList* target, size_t position);
 void ll_clear(struct LinkedList* target);
 
 /*
-	Attaches the linked list [right_chain] to the end of the linked list [left_chain]
+	Attaches the linked list [right_list] to the end of [left_list]
+
+	right_list is NOT freed as a result of this operation
 */
 
-void chain(struct LinkedList* left_chain, struct LinkedList* right_chain);
+void join(struct LinkedList* left_list, struct LinkedList* right_list);
 
 /*
-	Splits the linked list [target] into two linked lists at the index [split]
-	returns the newly disconnected linked list. The listnode at the index [split]
-	will be a part of the new linked list.
+	Splits the specified linkedlist at the index split (inclusive).
+
+	Returns the split linked list.
 */
 
-struct LinkedList unchain(struct LinkedList* target, size_t split);
+struct LinkedList split(struct LinkedList* target, size_t split);
 
 #endif
