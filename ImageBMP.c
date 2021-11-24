@@ -174,7 +174,7 @@ struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
 		free(convolved_image.file_header);
 		convolved_image.file_header = NULL;
 		convolved_image.width = 0;
-	convolved_image.height = 0;
+		convolved_image.height = 0;
 		return convolved_image;
 	}
 	memcpy(convolved_image.bitmap_header, image->bitmap_header, (pixel_array_offset - FILE_HEADER_SIZE) * sizeof(unsigned char));
