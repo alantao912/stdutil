@@ -13,8 +13,8 @@ struct Pixel {
 };
 
 struct Image_BMP {
-	size_t width, height;
-	unsigned char *file_header, *bitmap_header;
+	size_t width, height, trailer_size;
+	unsigned char *file_header, *bitmap_header, *trailer;
 	struct Pixel* pixels;
 };
 

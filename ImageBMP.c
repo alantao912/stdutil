@@ -5,11 +5,12 @@ static const size_t FILE_HEADER_SIZE = 14;
 
 struct Image_BMP openImageBMP(const char* path) 
 {
-	struct Image_BMP image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL};
+	struct Image_BMP image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL, .trailer = NULL};
 	FILE* img = fopen(path, "rb");
 	if (img) {
 		image.file_header = (unsigned char*) malloc(FILE_HEADER_SIZE * sizeof(unsigned char));
 		if (!image.file_header) {
+			fclose(img);
 			return image;
 		}
 		
@@ -17,6 +18,7 @@ struct Image_BMP openImageBMP(const char* path)
 		if (n != FILE_HEADER_SIZE) {
 			free(image.file_header);
 			image.file_header = NULL;
+			fclose(img);
 			return image;
 		}
 		
@@ -25,6 +27,7 @@ struct Image_BMP openImageBMP(const char* path)
 		if (!image.bitmap_header) {
 			free(image.file_header);
 			image.file_header = NULL;
+			fclose(img);
 			return image;
 		}
 		
@@ -34,6 +37,7 @@ struct Image_BMP openImageBMP(const char* path)
 			image.file_header = NULL;
 			free(image.bitmap_header);
 			image.bitmap_header = NULL;
+			fclose(img);
 			return image;
 		}
 		image.width = *(int*)&image.bitmap_header[4];
@@ -45,6 +49,7 @@ struct Image_BMP openImageBMP(const char* path)
 			image.file_header = NULL;
 			free(image.bitmap_header);
 			image.bitmap_header = NULL;
+			fclose(img);
 			return image;
 		}
 		short bpp = *(short*)&image.bitmap_header[14];
@@ -62,12 +67,41 @@ struct Image_BMP openImageBMP(const char* path)
 					image.pixels = NULL;
 					image.width = 0;
 					image.height = 0;
+					fclose(img);
 					return image;
 				}
 			}
 			fseek(img, padding, SEEK_CUR);
 		}
+		size_t bytes_read = 0;
+		unsigned char *trailer = (unsigned char*) malloc(1 * sizeof(unsigned char));
 		
+
+		int byte = fgetc(img);
+		while (byte != EOF) {
+			trailer[bytes_read] = (unsigned char) byte;
+			++bytes_read;
+			trailer = (unsigned char*) realloc(trailer, (bytes_read + 1) * sizeof(unsigned char));
+			if (!trailer) {
+				free(image.file_header);
+				image.file_header = NULL;
+				free(image.bitmap_header);
+				image.bitmap_header = NULL;
+				free(image.pixels);
+				image.pixels = NULL;
+				free(trailer);
+				image.trailer_size = 0;
+				image.width = 0;
+				image.height = 0;
+				fclose(img);
+				return image;
+				
+			}
+			byte = fgetc(img);
+		}
+		image.trailer = trailer;
+		image.trailer_size = bytes_read;
+		fclose(img);		
 	}
 	return image;
 }
@@ -101,6 +135,8 @@ bool save_ImageBMP(struct Image_BMP* image, const char* location) {
 		}
 		fwrite(buffer, sizeof(unsigned char), padding, dest);
 	}
+	fwrite(image->trailer, sizeof(unsigned char), image->trailer_size, dest);
+	fclose(dest);
 	return true;
 }
 
@@ -156,7 +192,7 @@ struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
 		return convolved_image;
 	}
 	memset(convolved_image.pixels, 255, convolved_image.width * convolved_image.height * sizeof(struct Pixel));
-	printf("starting convolution\n");
+	
 	
 	float *accumulator = (float*) malloc(bpp * sizeof(float) / 8);
 	
@@ -178,18 +214,17 @@ struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
  					{
 						unsigned char *src_pixel = (unsigned char*) getPixelAt(image, adjusted_col, adjusted_row);
 						for (int k = 0; k < bpp / 8; ++k) {
-							accumulator[k] += src_pixel[k] * fMatrix_get(kernel, i, j);
+							accumulator[k] += (float) src_pixel[k] * fMatrix_get(kernel, i, j);
 						}
 					}
 				}	
 			}
 			unsigned char *dest_pixel = (unsigned char*) getPixelAt(&convolved_image, col, row);
 			for (int i = 0; i < bpp / 8; ++i) {
-				dest_pixel[i] = accumulator[i];
+				dest_pixel[i] = (unsigned char) ((int) round(abs(accumulator[i])) % 255);
 			}
 
 		}
 	}
-	printf("Finished convolution\n");
 	return convolved_image;
 }
