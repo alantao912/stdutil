@@ -16,6 +16,11 @@ struct LinkedList array_to_linkedlist(void **array, size_t size) {
 	return linked_list;
 }
 
+struct LinkedList create_linkedlist() {
+	struct LinkedList ll = {.head = NULL, .iterator = NULL, .tail = NULL, .size = 0};
+	return ll;
+}
+
 void add_first(struct LinkedList* target, void* element) {
 	struct ListNode *node = (struct ListNode*) malloc(sizeof(struct ListNode));
 	node->element = element;
@@ -108,20 +113,71 @@ void* ll_remove(struct LinkedList* target, size_t position) {
 	if (position >= target->size) {
 		return;
 	}
-	
-	struct ListNode **iterator = &(target->head);
+	// TODO
+	struct ListNode **iterator = &(target->head), *prev = NULL;
 	for (size_t i = 0; i < position; ++i) {
+		prev = *iterator;
 		iterator = &((*iterator)->next);
+	}
+
+	if (position == target->size - 1) {
+		target->tail = prev;
+	}
+	
+	if (*iterator == target->iterator) {
+		target->iterator = prev;
 	}
 	void *data = (*iterator)->element;
 	struct ListNode *toRemove = *iterator;
 	*iterator = (*iterator)->next;
 	free(toRemove);
+	--target->size;
 	return data;
 }
 
-void ll_clear(struct LinkedList* target);
+void ll_clear(struct LinkedList* target) {
+	struct ListNode *iterator = target->head, *prev = NULL;
+	while (iterator) {
+		prev = iterator;
+		iterator = iterator->next;
+		free(prev);
+	}
+	target->head = NULL;
+	target->tail = NULL;
+	target->iterator = NULL;
+	target->size = 0;
+}
 
-void join(struct LinkedList* left_chain, struct LinkedList* right_chain);
+void join(struct LinkedList* left_list, struct LinkedList* right_list) {	
+	if (left_list->size != 0 && right_list->size != 0) {
+		left_list->tail->next = right_list->head;
+		left_list->tail = right_list->tail;
+		left_list->size += right_list->size;
+	} else if (right_list->size != 0) {
+		left_list->head = right_list->head;
+		left_list->tail = right_list->tail
+		left_list->size = right_list->size;
+	}
+}
 
-struct LinkedList unchain(struct LinkedList* target, size_t split);
+struct LinkedList unchain(struct LinkedList* target, size_t split) {
+	struct LinkedList new = {.head = NULL, .iterator = NULL, .tail = target->tail, .size = 0};
+	if (position >= size) {
+		return new;
+	}
+	struct ListNode *iterator = target->head, *prev = NULL;
+	for (size_t i = 0; i < split; ++i) {
+		prev = iterator;
+		iterator = iterator->next;
+	}
+	target->tail = prev;
+	if (split == 0) {
+		target->head = NULL;
+	}
+	new.head = iterator;
+	new.iterator = new.head;
+	new.size = target->size - split;
+
+	target->size -= new.size;
+	return new;
+}

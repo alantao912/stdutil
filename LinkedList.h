@@ -22,6 +22,12 @@ struct LinkedList {
 struct LinkedList array_to_linkedlist(void **array, size_t size);
 
 /*
+	Creates and initializes an empty linked list
+*/
+
+struct LinkedList create_linkedlist();
+
+/*
 	Creates a new list node with the specified data and prepends it to the front of the linked list.
 */
 
