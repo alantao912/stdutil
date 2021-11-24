@@ -113,7 +113,7 @@ void* ll_remove(struct LinkedList* target, size_t position) {
 	if (position >= target->size) {
 		return;
 	}
-	// TODO
+	
 	struct ListNode **iterator = &(target->head), *prev = NULL;
 	for (size_t i = 0; i < position; ++i) {
 		prev = *iterator;
