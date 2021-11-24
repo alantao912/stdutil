@@ -160,7 +160,7 @@ void join(struct LinkedList* left_list, struct LinkedList* right_list) {
 	}
 }
 
-struct LinkedList unchain(struct LinkedList* target, size_t split) {
+struct LinkedList split(struct LinkedList* target, size_t split) {
 	struct LinkedList new = {.head = NULL, .iterator = NULL, .tail = target->tail, .size = 0};
 	if (position >= size) {
 		return new;
