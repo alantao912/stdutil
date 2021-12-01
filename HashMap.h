@@ -17,13 +17,32 @@ struct HashMap {
 	size_t size;
 	float load_factor;
 
+	/*
+		Hash function must return the same hash for two keys that are deemed equal by the comparator.
+
+		Example:
+		If comparator(key1, key2) == true, then hash_function(key1) == hash_function(key2).
+	*/
+
 	size_t (*hash_function)(void* key);
+
+	/*
+		The programmer must implement an equivalence relation as a comparator function. That is, it must be:
+
+		Let a, b, c be elements within set S.
+
+		Reflexive: If comparator(a, b) is true, then comparator(b, a) must also be true.
+
+		Transitive: If comparator(a, b) is true, and comparator(b, c) is true, then comparator(a, c) must also be true.
+
+		Symmetric: comparator(a, a) must be true.
+	*/
 
 	bool (*comparator)(void* key0, void* key1);
 };
 
 /*
-	Creates an empty hashmap with specified initial capacity and loadfactor, and using default hash function.
+	Creates an empty hashmap with specified initial capacity and loadfactor, using default hash function and comparator.
 
 	It is recommended that the initial capacity be a prime number.
 
@@ -75,5 +94,11 @@ struct ArrayList values(struct HashMap* map);
 */
 
 size_t default_hash_function(void* key);
+
+/*
+	Default comparator function, checks if pointers have the same value.
+*/
+
+bool default_comparator(void *key0, void *key1);
 
 #endif

@@ -6,7 +6,7 @@
 
 struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
 	struct fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
-	matrix.elements = malloc(num_rows * num_cols * sizeof(float));
+	matrix.elements = (float*) calloc(num_rows * num_cols, sizeof(float));
 	if(matrix.elements != NULL) {
 		matrix.rows = num_rows;
 		matrix.cols = num_cols;

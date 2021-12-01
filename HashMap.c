@@ -14,6 +14,7 @@ struct HashMap create_HashMap(size_t initial_capacity, float lf) {
 	hm.size = 0;
 	hm.load_factor = lf;
 	hm.hash_function = &default_hash_function;
+	hm.comparator = &default_comparator;
 	return hm;
 }
 
@@ -151,6 +152,10 @@ static const unsigned int a = 48339, W = 97, M = UINT_MAX;
 size_t default_hash_function(void* key) {
 	unsigned int hash = (unsigned int)key;
 	return (size_t) floor(((a * hash) % W) * (M / W));
+}
+
+bool default_comparator(void *key0, void *key1) {
+	return key0 == key1;
 }
 
 static void resize(struct HashMap* map) {
