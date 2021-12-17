@@ -63,7 +63,7 @@ void ll_addAt(struct LinkedList* target, size_t position, void* element) {
 
 void* ll_set(struct LinkedList* target, size_t position, void* element) {
 	if (position >= target->size) {
-		return;
+		return NULL;
 	}
 	struct ListNode *iterator = target->head;
 	for (size_t i = 0; i < position; ++i) {
@@ -111,7 +111,7 @@ void reset(struct LinkedList* target) {
 
 void* ll_remove(struct LinkedList* target, size_t position) {
 	if (position >= target->size) {
-		return;
+		return NULL;
 	}
 	
 	struct ListNode **iterator = &(target->head), *prev = NULL;
@@ -155,14 +155,14 @@ void join(struct LinkedList* left_list, struct LinkedList* right_list) {
 		left_list->size += right_list->size;
 	} else if (right_list->size != 0) {
 		left_list->head = right_list->head;
-		left_list->tail = right_list->tail
+		left_list->tail = right_list->tail;
 		left_list->size = right_list->size;
 	}
 }
 
 struct LinkedList split(struct LinkedList* target, size_t split) {
 	struct LinkedList new = {.head = NULL, .iterator = NULL, .tail = target->tail, .size = 0};
-	if (position >= size) {
+	if (split >= target->size) {
 		return new;
 	}
 	struct ListNode *iterator = target->head, *prev = NULL;

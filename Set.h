@@ -2,23 +2,24 @@
 #define STDUTIL_SET_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 struct SetEntry {
 	void *data;
 	bool removed;
-}
+};
 
 struct Set {
 
 	/* Backing array for the elements in the set. */	
 
-	struct SetEntry *set;
+	struct SetEntry *data;
 	
 	/*
 		Number of elements within the set
 	*/
 
-	size_t cardinality, capacity, iterator;
+	size_t cardinality, capacity;
 
 	/*
 		Hash function must return the same hash for two keys that are deemed equal by the comparator.
@@ -42,6 +43,12 @@ struct Set {
 	*/
 
 	bool (*comparator)(void *l_operand, void *r_operand);
+	
+	/*
+		Load factor of the set, value between 0 and 1. Resizes the backing array of the set when size / capacity > lf
+	*/
+
+	float lf;
 
 };
 
@@ -74,11 +81,5 @@ bool set_remove(struct Set *set, void *element);
 */
 
 bool set_contains(struct Set *set, void *element);
-
-/*
-	Provides a way to traverse through all elements in the set. Returns the element pointed to by the iterator, and advances it to the next element.	
-*/
-
-void* set_next(struct Set *set);
 
 #endif

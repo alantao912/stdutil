@@ -10,8 +10,10 @@ struct Queue {
 
 struct Queue create_Queue(size_t initialCapacity);
 
-void enqueue(struct Queue* target, void* element);
+void enqueue(struct Queue *target, void *element);
 
-void* dequeue(struct Queue* target);
+void* dequeue(struct Queue *target);
+
+void q_clear(struct Queue *target);
 
 #endif

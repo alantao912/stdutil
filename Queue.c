@@ -36,3 +36,11 @@ void* dequeue(struct Queue* target) {
 	}
 	return ret;
 }
+
+void q_clear(struct Queue *target) {
+	for (size_t i = 0; i < target->size; ++i) {
+		free(target->data[(i + target->front) % target->capacity]);
+	}
+	target->front = 0;
+	target->size = 0;
+}
