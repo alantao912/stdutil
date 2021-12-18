@@ -1,5 +1,5 @@
-a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o
-	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o -o a
+a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o PriorityQueue.o
+	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o PriorityQueue.o -o a
 
 Test.o: Test.c
 	gcc -c Test.c
@@ -33,3 +33,6 @@ HashMap.o: HashMap.c HashMap.h
 
 Set.o: Set.c Set.h
 	gcc -c Set.c
+
+PriorityQueue.o: PriorityQueue.c PriorityQueue.h
+	gcc -c PriorityQueue.c
