@@ -1,138 +1,288 @@
 #include <stdlib.h>
 #include "BinaryTree.h"
+#include "Queue.h"
 
-#define TEST
-#ifdef TEST
-	#include <stdio.h>
-#endif
-
-static struct TreeNode* tree_addHelper(struct TreeNode* target, void* element, signed char (*comparator)(void* cmpl, void* cmpr));
-
-static void preorderHelper(struct TreeNode* target, struct ArrayList* list);
-
-static void inorderHelper(struct TreeNode* target, struct ArrayList* list);
-
-static void postorderHelper(struct TreeNode* target, struct ArrayList* list);
-
-void tree_add(struct TreeNode** target, void* element, signed char (*comparator)(void* cmpl, void* cmpr)) {
-	*target = tree_addHelper(*target, element, comparator);
-}
-
-static struct TreeNode* tree_addHelper(struct TreeNode* target, void* element, signed char (*comparator)(void* cmpl, void* cmpr)) {
-	if(!target) {
-		struct TreeNode* node = (struct TreeNode*) malloc(sizeof(struct TreeNode));
-		node->data = element;
-		node->left = NULL;
-		node->right = NULL;
-		return node;
-	}
-	signed char difference = (*comparator)(element, target->data);
-	if(difference > 0)
-		target->right = tree_addHelper(target->right, element, comparator);
-	else
-		target->left = tree_addHelper(target->left, element, comparator);	
-	return target;
-}
-
-struct ArrayList preorderTree(struct TreeNode* target) {
-	struct ArrayList data = create_ArrayList(1);
-	preorderHelper(target, &data);	
-	return data;
-}
-
-static void preorderHelper(struct TreeNode* target, struct ArrayList* list) {
-	if(!target)
-		return;
-	al_append(list, target->data);
-	preorderHelper(target->left, list);
-	preorderHelper(target->right, list);
-}
-
-struct ArrayList inorderTree(struct TreeNode* target) {
-	struct ArrayList data = create_ArrayList(1);
-	inorderHelper(target, &data);
-	return data;
-}
-
-static void inorderHelper(struct TreeNode* target, struct ArrayList* list) {
-	if(!target)
-		return;
-	inorderHelper(target->left, list);
-	al_append(list, target->data);
-	inorderHelper(target->right, list);
-}
-
-struct ArrayList postorderTree(struct TreeNode* target) {
-	struct ArrayList data = create_ArrayList(1);
-	postorderHelper(target, &data);
-	return data;
-}
-
-static void postorderHelper(struct TreeNode* target, struct ArrayList* list) {
-	if(!target)
-		return;
-	postorderHelper(target->left, list);
-	postorderHelper(target->right, list);
-	al_append(list, target->data);
-}
-
-struct ArrayList levelorderTree(struct TreeNode* target) {
-	struct ArrayList data = create_ArrayList(1);
-	if(target) {
-		struct ArrayList node_queue = create_ArrayList(1);
-		al_append(&node_queue, target);
-		al_append(&data, target->data);
-
-		char cont;
-		int start = 0;
-
-		do {
-			int front = al_size(&node_queue);
-			cont = 0;
-			for(int i = start; i < al_size(&node_queue); ++i) {
-				struct TreeNode* iterator = al_get(&node_queue, i);
-				if(iterator->left) {
-					al_append(&data, iterator->left->data);
-					al_append(&node_queue, iterator->left);
-					cont = 1;
-				}
-				if(iterator->right) {
-					al_append(&data, iterator->right->data);
-					al_append(&node_queue, iterator->right);
-					cont = 1;
-				}
-			}
-			start = al_size(&node_queue) - front;
-		} while(cont == 1);
-	}
-	return data;
-}
-
-void* searchTree(struct TreeNode* target, signed char (*comparator)(void* cmpl, void* cmpr), void* element) {
-	if(!target)
-		return NULL;
+static void update(struct TreeNode *node) {
+	int leftHeight = -1;
 	
-	signed char difference = (*comparator)(element, target->data);
-	if(difference == 0)
-		return target->data;
-	if(difference > 0)
-		return searchTree(target->right, comparator, element);
-	else
-		return searchTree(target->left, comparator, element);
+	if (node->left) {
+		leftHeight = node->left->height;
+	}
+
+	int rightHeight = -1;
+
+	if (node->right) {
+		rightHeight = node->right->height;
+	}
+
+	node->height = leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+	node->bf = (signed char) (leftHeight - rightHeight);
 }
 
-void applyTree(struct TreeNode* target, void (*operation)(void* operand)) {
-	if(!target)
-		return;
-	(*operation)(target->data);
-	applyTree(target->left, operation);
-	applyTree(target->right, operation);
+static struct TreeNode* leftRotation(struct TreeNode *node) {
+	struct TreeNode *b = node->right;
+	node->right = b->left;
+	b->left = node;
+	update(node);
+	update(b);
+	return b;
 }
 
-void tree_clear(struct TreeNode* target) {
-	if(!target)
+static struct TreeNode* rightRotation(struct TreeNode *node) {
+	struct TreeNode *b = node->left;
+	node->left = b->right;
+	b->right = node;
+	update(node);
+	update(b);
+	return b;
+}
+
+static struct TreeNode* leftRightRotation(struct TreeNode *node) {
+	node->left = leftRotation(node->left);
+	return rightRotation(node);
+}
+
+static struct TreeNode* rightLeftRotation(struct TreeNode *node) {
+	node->right = rightRotation(node->right);
+	return leftRotation(node);
+}
+
+static struct TreeNode* findSuccessor(struct TreeNode *node) {
+	struct TreeNode *iterator = node->right;
+	while (iterator->left) {
+		iterator = iterator->left;
+	}
+	return iterator;
+}
+
+static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+	if (!node) {
+		struct TreeNode *child = (struct TreeNode*) malloc(sizeof(struct TreeNode));
+		child->left = NULL;
+		child->right = NULL;
+		child->data = data;
+		child->height = 0;
+		child->bf = 0;
+		child->count = 1;
+		return child;
+	}
+	
+	signed char difference = comparator(data, node->data);
+	if (difference < 0) {
+		node->left = addHelper(node->left, data, comparator);
+	} else if (difference > 0) {
+		node->right = addHelper(node->right, data, comparator);
+	} else {
+		++node->count;
+	}
+	update(node);
+	if (node->bf > 1) {
+		if (node->left->bf < 0) {
+			node = leftRightRotation(node);
+		} else {
+			node = rightRotation(node);
+		}
+	} else if (node->bf < -1) {
+		if (node->right->bf > 0) {
+			node = rightLeftRotation(node);
+		} else {
+			node = leftRotation(node);
+		}
+	}
+	return node;
+}
+
+static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+	if (!node) {
+		return NULL;
+	}
+	signed char difference = comparator(data, node->data);
+	if (difference < 0) {
+		node->right = removeHelper(node->right, data, comparator);
+	} else if (difference > 0) {
+		node->left = removeHelper(node->left, data, comparator);
+	} else if (node->count > 1) {
+		--node->count;
+	} else if (!node->left && !node->right) {
+		return NULL;
+	} else if (!node->left) {
+		return node->right;
+	} else if (!node->right) {
+		return node->right;
+	} else {
+		struct TreeNode *successor = findSuccessor(node);
+		node->data = successor->data;
+		node->count = successor->count;
+		successor->count = 1;
+		node->right = removeHelper(node->right, successor->data, comparator);
+	}
+	update(node);
+	if (node->bf > 1) {
+		if (node->left->bf < 0) {
+			node = leftRightRotation(node);
+		} else {
+			node = rightRotation(node);
+		}
+	} else if (node->bf < -1) {
+		if (node->right->bf > 0) {
+			node = rightLeftRotation(node);
+		} else {
+			node = leftRotation(node);
+		}
+	}
+	return node;
+}
+
+static void* getHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+	if (!node) {
+		return NULL;
+	}
+	
+	signed char difference = comparator(data, node->data);
+	if (difference < 0) {
+		return getHelper(node->left, data, comparator);
+	} else if (difference > 0) {
+		return getHelper(node->right, data, comparator);
+	} else {	
+		return node->data;
+	}
+}
+
+struct Tree create_tree(void **array, size_t size, signed char (*comparator)(void *loperand, void *roperand)) {
+	struct Tree tree = {.root = NULL, .size = 0, .comparator = comparator};
+	
+	for (size_t i = 0; i < size; ++i) {
+		tree_add(&tree, array[i]);
+	}
+
+	return tree;
+}
+
+void tree_add(struct Tree *tree, void *data) {
+	if (!data) {
 		return;
-	tree_clear(target->left);
-	tree_clear(target->right);
-	free(target);
+	}
+	tree->root = addHelper(tree->root, data, tree->comparator);
+	++tree->size;
+}
+
+void* tree_remove(struct Tree *tree, void *data) {
+	if (!data) {
+		return NULL;
+	}
+	
+	void *found = getHelper(tree->root, data, tree->comparator);
+	if (!found) {
+		return NULL;
+	}
+
+	tree->root = removeHelper(tree->root, data, tree->comparator);
+	--tree->size;
+	return found;
+}
+
+void* tree_get(struct Tree *tree, void *data) {
+	if (!data) {
+		return NULL;
+	}
+	return getHelper(tree->root, data, tree->comparator);
+}
+
+static void tree_clear_helper(struct TreeNode *node) {
+	if (!node) {
+		return;
+	}
+	
+	tree_clear_helper(node->left);
+	tree_clear_helper(node->right);
+	free(node);
+}
+
+void tree_clear(struct Tree *tree) {
+	tree_clear_helper(tree->root);
+	tree->root = NULL;
+	tree->size = 0;	
+}
+
+static void tree_delete_helper(struct TreeNode *node) {
+	if (!node) {
+		return;
+	}
+	
+	tree_delete_helper(node->left);
+	tree_delete_helper(node->right);
+	free(node->data);
+	free(node);
+}
+
+void tree_delete(struct Tree *tree) {
+	tree_delete_helper(tree->root);
+	tree->root = NULL;
+	tree->size = 0;	
+}
+
+static void preorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+	if (!node) {
+		return;
+	}
+	al_append(collection, node->data);
+	preorderHelper(node->left, collection);
+	preorderHelper(node->right, collection);
+}
+
+struct ArrayList preorder(struct Tree tree) {
+	struct ArrayList collection = create_ArrayList(tree.size);
+	preorderHelper(tree.root, &collection);
+	return collection;
+}
+
+static void inorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+	if (!node) {
+		return;
+	}
+	inorderHelper(node->left, collection);
+	al_append(collection, node->data);
+	inorderHelper(node->right, collection);
+}
+
+struct ArrayList inorder(struct Tree tree) {
+	struct ArrayList collection = create_ArrayList(tree.size);
+	inorderHelper(tree.root, &collection);
+	return collection;
+}
+
+static void postorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+	if (!node) {
+		return;
+	}
+	postorderHelper(node->left, collection);
+	postorderHelper(node->right, collection);
+	al_append(collection, node->data);
+}
+
+struct ArrayList postorder(struct Tree tree) {
+	struct ArrayList collection = create_ArrayList(tree.size);
+	postorderHelper(tree.root, &collection);
+	return collection;
+}
+
+struct ArrayList levelorder(struct Tree tree) {
+	struct Queue node_queue = create_Queue(8);
+	struct ArrayList data = create_ArrayList(tree.size);
+
+	enqueue(&node_queue, tree.root);
+	
+	while (node_queue.size > 0) {
+		struct TreeNode *current = (struct TreeNode*) dequeue(&node_queue);
+		al_append(&data, current->data);
+		
+		if (current->left) {
+			enqueue(&node_queue, current->left);
+		}
+
+		if (current->right) {
+			enqueue(&node_queue, current->right);			
+		}
+	}
+	return data;
 }

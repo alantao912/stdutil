@@ -16,9 +16,10 @@ void* peek(struct Stack* target) {
 }
 
 void* pop(struct Stack* target) {
-	if(target->elements.size == 0)
+	if (target->elements.size == 0) {
 		return NULL;
-	return al_delete(&(target->elements), target->elements.size - 1);
+	}
+	return al_remove(&(target->elements), target->elements.size - 1);
 }
 
 size_t s_size(struct Stack* target) {

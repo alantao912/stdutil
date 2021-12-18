@@ -114,7 +114,7 @@ void* al_get(struct ArrayList* target, size_t position) {
 	return NULL;
 }
 
-void* al_delete(struct ArrayList* target, size_t position) {
+void* al_remove(struct ArrayList* target, size_t position) {
 	void* ret = NULL;
 	if (position < target->size) {
 		ret = target->elements[position];

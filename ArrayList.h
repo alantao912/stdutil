@@ -77,7 +77,7 @@ void* al_get(struct ArrayList* target, size_t position);
 	It is up to the programmer to call free() the returned pointer.
 */
 
-void* al_delete(struct ArrayList* target, size_t position);
+void* al_remove(struct ArrayList* target, size_t position);
 
 /*
 	Sorts the ArrayList using the quick sort algorithm. The programmer must provide a function for comparing two generic elements.

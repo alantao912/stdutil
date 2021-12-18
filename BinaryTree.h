@@ -4,65 +4,137 @@
 #include "ArrayList.h"
 
 struct TreeNode {
-	void* data;
-	struct TreeNode* left;
-	struct TreeNode* right;
+
+	/*
+		Generic data to data contained in tree node
+	*/
+
+	void *data;
+
+	/*
+		Left and right respective children of the node.
+
+		A value of 'NULL' represents no child.
+	*/
+
+	struct TreeNode *left, *right;
+	
+	/*
+		Maximum number of tree levels below current node.
+	*/
+
+	unsigned char height;
+
+	/*
+		Balance factor: Difference of the heights of the left child and right child
+
+		bf = left->height - right->height		
+	*/
+
+	signed char bf;
+	
+	/*
+		Number of copies of duplicate values stored in this treenode.
+	*/
+
+	unsigned int count;
+};
+
+struct Tree {
+
+	/*
+		Pointer to the root of the tree.
+	*/
+
+	struct TreeNode *root;
+	
+	/*
+		Total number of nodes within the tree.
+	*/
+
+	size_t size;
+
+	/*
+		Compares the data stored in the tree.
+
+		Must return a negative number if loperand < roperand,
+			    a positive number if loperand > roperand,
+			    zero if loperand = roperand.
+	*/
+
+	const signed char (*comparator)(void *loperand, void *roperand);
 };
 
 /*
-	Places a new tree node in the appropriate position of the tree.
-	
-	Comparator must return -1 if the element is smaller than the searched for element, 
-	0 if the two are equal, and 1 if the element is greater than the searched for element.
-	
+	Takes data contained in an array, and constructs a balanced tree.
+
+	Leaves original array and elements of the original array unchanged.
 */
 
-void tree_add(struct TreeNode** target, void* element, signed char (*comparator)(void* cmpl, void* cmpr));
+struct Tree create_tree(void **array, size_t size, signed char (*comparator)(void *loperand, void *roperand));
 
 /*
-	Returns the nodes of the tree in an arraylist in preorder.
+	Adds a new node containing the specified data to its correct position within the tree, and increments size.
+
+	Maintains that the tree is balanced.
 */
 
-struct ArrayList preorderTree(struct TreeNode* target);
+void tree_add(struct Tree *tree, void *data);
 
 /*
-	Returns the nodes of the tree in an arraylist inorder.
+	Removes and returns the node containing the specified data from the tree, and decrements size.
+
+	Maintains that the tree is balanced.	
 */
 
-struct ArrayList inorderTree(struct TreeNode* target);
+void* tree_remove(struct Tree *tree, void *data);
 
 /*
-	Returns the nodes of the tree in an arraylist in postorder.
+	Searches for and returns the data specified from the tree.
+
+	Leaves the tree unchanged.
 */
 
-struct ArrayList postorderTree(struct TreeNode* target);
+void* tree_get(struct Tree *tree, void *data);
 
 /*
-	Returns the nodes of the tree in an arrayist in levelorder.
+	Frees every node within the tree, sets root to NULL, and sets size to 0.
+
+	Does not free data stored within the tree.
 */
 
-struct ArrayList levelorderTree(struct TreeNode* target);
+void tree_clear(struct Tree *tree);
 
 /*
-	Searches the tree for data containing [element]. Returns a pointer to the found data.
+	Frees every node within the tree, sets root to NULL, and sets size to 0.
 
-	Comparator must return -1 if the element is smaller than the searched for element, 
-	0 if the two are equal, and 1 if the element is greater than the searched for element.
+	Frees data stored within the tree.
 */
 
-void* searchTree(struct TreeNode* target, signed char (*comparator)(void* cmpl, void* cmpr), void* element);
+void tree_delete(struct Tree *tree);
 
 /*
-	Applies a function to every node on the tree
+	Returns an arraylist of data stored in the tree from a preorder traversal.
 */
 
-void applyTree(struct TreeNode* target, void (*operation)(void* operand));
+struct ArrayList preorder(struct Tree tree);
 
 /*
-	Frees ALL children, grandchildren, great-grandchidlren etc. nodes of the 
-	tree node pointed to by [target] as well as the data stored in the freed nodes.
+	Returns an arraylist of data stored in the tree from an inorder traversal.
 */
 
-void tree_clear(struct TreeNode* target);
+struct ArrayList inorder(struct Tree tree);
+
+/*
+	Returns an arraylist of data stored in the tree from a postorder traversal.
+*/
+
+struct ArrayList postorder(struct Tree tree);
+
+/*
+	Returns an arraylist of data stored in the tree from a levelorder traversal.
+*/
+
+struct ArrayList levelorder(struct Tree tree);
 
 #endif
