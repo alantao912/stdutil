@@ -37,3 +37,7 @@ void s_ensure_capacity(struct Stack* target, size_t new_capacity) {
 void s_clear(struct Stack* target) {
 	al_clear(&(target->elements));	
 }
+
+void s_delete(struct Stack *target) {
+	al_delete(&(target->elements));
+}

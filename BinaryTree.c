@@ -55,7 +55,7 @@ static struct TreeNode* findSuccessor(struct TreeNode *node) {
 	return iterator;
 }
 
-static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		struct TreeNode *child = (struct TreeNode*) malloc(sizeof(struct TreeNode));
 		child->left = NULL;
@@ -92,7 +92,7 @@ static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char
 	return node;
 }
 
-static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}
@@ -133,7 +133,7 @@ static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed c
 	return node;
 }
 
-static void* getHelper(struct TreeNode *node, void *data, signed char (*comparator)(void *loperand, void *roperand)) {
+static void* getHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}
@@ -148,7 +148,7 @@ static void* getHelper(struct TreeNode *node, void *data, signed char (*comparat
 	}
 }
 
-struct Tree create_tree(void **array, size_t size, signed char (*comparator)(void *loperand, void *roperand)) {
+struct Tree create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	struct Tree tree = {.root = NULL, .size = 0, .comparator = comparator};
 	
 	for (size_t i = 0; i < size; ++i) {

@@ -21,7 +21,7 @@ struct LinkedList create_linkedlist() {
 	return ll;
 }
 
-void add_first(struct LinkedList* target, void* element) {
+void add_first(struct LinkedList *target, void *element) {
 	struct ListNode *node = (struct ListNode*) malloc(sizeof(struct ListNode));
 	node->element = element;
 	node->next = target->head;
@@ -29,7 +29,7 @@ void add_first(struct LinkedList* target, void* element) {
 	++target->size;
 }
 
-void add_last(struct LinkedList* target, void* element) {
+void add_last(struct LinkedList *target, void *element) {
 	struct ListNode *node = (struct ListNode*) malloc(sizeof(struct ListNode));
 	node->element = element;
 	node->next = NULL;
@@ -38,7 +38,7 @@ void add_last(struct LinkedList* target, void* element) {
 	++target->size;
 }
 
-void ll_addAt(struct LinkedList* target, size_t position, void* element) {
+void ll_addAt(struct LinkedList *target, size_t position, void *element) {
 	if (position > target->size) {
 		return;
 	}
@@ -61,7 +61,7 @@ void ll_addAt(struct LinkedList* target, size_t position, void* element) {
 	++target->size;
 }
 
-void* ll_set(struct LinkedList* target, size_t position, void* element) {
+void* ll_set(struct LinkedList *target, size_t position, void *element) {
 	if (position >= target->size) {
 		return NULL;
 	}
@@ -69,7 +69,7 @@ void* ll_set(struct LinkedList* target, size_t position, void* element) {
 	for (size_t i = 0; i < position; ++i) {
 		iterator = iterator->next;
 	}
-	void* old_value = iterator->element;
+	void *old_value = iterator->element;
 	iterator->element = element;
 	return old_value;
 }
@@ -78,7 +78,7 @@ size_t ll_size(struct LinkedList* target) {
 	return target->size;
 }
 
-void* ll_get(struct LinkedList* target, size_t index) {
+void* ll_get(struct LinkedList *target, size_t index) {
 	if (index >= target->size) {
 		return NULL;
 	}
@@ -89,7 +89,7 @@ void* ll_get(struct LinkedList* target, size_t index) {
 	return iterator->element;
 }
 
-void* next(struct LinkedList* target) {
+void* next(struct LinkedList *target) {
 	void *ret = NULL;
 	if (target->iterator) {
 		ret = target->iterator->element;
@@ -101,15 +101,15 @@ void* next(struct LinkedList* target) {
 	return ret;
 }
 
-bool hasNext(struct LinkedList* target) {
+bool hasNext(struct LinkedList *target) {
 	return !target->iterator || target->iterator->next;
 }
 
-void reset(struct LinkedList* target) {
+void reset(struct LinkedList *target) {
 	target->iterator = target->head;
 }
 
-void* ll_remove(struct LinkedList* target, size_t position) {
+void* ll_remove(struct LinkedList *target, size_t position) {
 	if (position >= target->size) {
 		return NULL;
 	}
@@ -135,9 +135,23 @@ void* ll_remove(struct LinkedList* target, size_t position) {
 	return data;
 }
 
-void ll_clear(struct LinkedList* target) {
+void ll_clear(struct LinkedList *target) {
 	struct ListNode *iterator = target->head, *prev = NULL;
 	while (iterator) {
+		prev = iterator;
+		iterator = iterator->next;
+		free(prev);
+	}
+	target->head = NULL;
+	target->tail = NULL;
+	target->iterator = NULL;
+	target->size = 0;
+}
+
+void ll_delete(struct LinkedList *target) {
+	struct ListNode *iterator = target->head, *prev = NULL;
+	while (iterator) {
+		free(iterator->element);
 		prev = iterator;
 		iterator = iterator->next;
 		free(prev);

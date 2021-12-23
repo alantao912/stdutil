@@ -95,10 +95,20 @@ void reset(struct LinkedList* target);
 void* ll_remove(struct LinkedList* target, size_t position);
 
 /*
-	Destroys the entire linked list, while freeing all the data that the linked list stored.
+	Frees every node within the linkedlist. Sets head, tail, and iterator to null. Sets size to 0.
+
+	Leaves data within the linkedlist unchanged.
 */
 
 void ll_clear(struct LinkedList* target);
+
+/*
+	Frees every node within the linkedlist. Sets head, tail, and iterator to null. Sets size to 0.
+
+	Frees data within the linkedlist.
+*/
+
+void ll_delete(struct LinkedList *target);
 
 /*
 	Attaches the linked list [right_list] to the end of [left_list]

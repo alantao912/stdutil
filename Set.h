@@ -28,7 +28,7 @@ struct Set {
 		If comparator(key1, key2) == true, then hash_function(key1) == hash_function(key2).
 	*/
 
-	size_t (*hash_function)(void* key);
+	size_t (*hash_function)(const void* key);
 
 	/*
 		The programmer must implement an equivalence relation as a comparator function. That is, it must be:
@@ -42,7 +42,7 @@ struct Set {
 		Symmetric: comparator(a, a) must be true.
 	*/
 
-	bool (*comparator)(void *l_operand, void *r_operand);
+	bool (*comparator)(const void *l_operand, const void *r_operand);
 	
 	/*
 		Load factor of the set, value between 0 and 1. Resizes the backing array of the set when size / capacity > lf
@@ -81,5 +81,17 @@ bool set_remove(struct Set *set, void *element);
 */
 
 bool set_contains(struct Set *set, void *element);
+
+/*
+	Removes every element within the set.
+*/
+
+void set_clear(struct Set *set);
+
+/*
+	Removes and frees every element from within the set.
+*/
+
+void set_delete(struct Set *set);
 
 #endif

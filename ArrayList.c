@@ -10,7 +10,7 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 		initial_capacity = DEFAULT_CAPACITY;
 	}
 	struct ArrayList new;
-	new.elements = calloc(initial_capacity, sizeof(void*));
+	new.elements = (void**) calloc(initial_capacity, sizeof(void*));
 	for (size_t i = 0; i < initial_capacity; i++) {
 		new.elements[i] = NULL;
 	}
@@ -19,12 +19,12 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 	return new;
 }
 
-bool al_append(struct ArrayList* target, void* element) {
+bool al_append(struct ArrayList *target, void *element) {
 	if (target->size < target->capacity) {
 		target->elements[target->size] = element;
-		target->size++;
+		++target->size;
 	} else {
-		void** new = calloc(target->capacity * 2, sizeof(void*));
+		void **new = calloc(target->capacity * 2, sizeof(void*));
 		if (!new) {
 			return false;
 		}
@@ -35,14 +35,13 @@ bool al_append(struct ArrayList* target, void* element) {
 		new[target->size] = element;
 		target->elements = new;		
 		target->capacity *= 2;
-		target->size++;
+		++target->size;
 	}
 	return true;	
 }
 
-bool al_addAt(struct ArrayList* target, size_t position, void* element) {
-
-	if (position >= target->size) {
+bool al_addAt(struct ArrayList *target, size_t position, void *element) {
+	if (position > target->size) {
 		return false;
 	}
 	if (target->size < target->capacity) {
@@ -51,15 +50,16 @@ bool al_addAt(struct ArrayList* target, size_t position, void* element) {
 		}
 		target->elements[position] = element;
 	} else {
-		void** new = calloc(target->capacity * 2, sizeof(void*));
+		void **new = (void**) calloc(target->capacity * 2, sizeof(void*));
 		if (!new) {
 			return false;
 		}
-		for (size_t i = 0; i < position; ++i) {
+		size_t i;
+		for (i = 0; i < position; ++i) {
 			new[i] = target->elements[i];
 		}
-		new[position] = element;
-		for (size_t i = position; i < target->size; ++i) {
+		new[i] = element;
+		for (; i < target->size; ++i) {
 			new[i + 1] = target->elements[i];
 		}
 		free(target->elements);
@@ -79,15 +79,16 @@ size_t al_capacity(struct ArrayList* target) {
 }
 
 bool al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
-	if (new_capacity > target->capacity) {
-		void** new = calloc(new_capacity, sizeof(void*));
+	if (new_capacity >= target->size) {
+		void **new = (void**) calloc(new_capacity, sizeof(void*));
 		if (!new) {
 			return false;
 		}
-		for (size_t i = 0; i < target->size; ++i) {
+		size_t i;
+		for (i = 0; i < target->size; ++i) {
 			new[i] = target->elements[i];
 		}
-		for (size_t i = target->size; i < new_capacity; ++i) {
+		for (; i < new_capacity; ++i) {
 			new[i] = NULL;
 		}
 		free(target->elements);
@@ -98,24 +99,24 @@ bool al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	return false;
 }
 
-void* al_set(struct ArrayList* target, size_t position, void* element) {
-	if (position >= target->size) {
-		return NULL;
+void* al_set(struct ArrayList *target, size_t position, void *element) {
+	void *ret = NULL;
+	if (position < target->size) {
+		ret = target->elements[position];
+		target->elements[position] = element;
 	}
-	void* ret = target->elements[position];
-	target->elements[position] = element;
 	return ret;
 }
 
-void* al_get(struct ArrayList* target, size_t position) {
+void* al_get(struct ArrayList *target, size_t position) {
 	if (position < target->size) {
 		return target->elements[position];
 	}
 	return NULL;
 }
 
-void* al_remove(struct ArrayList* target, size_t position) {
-	void* ret = NULL;
+void* al_remove(struct ArrayList *target, size_t position) {
+	void *ret = NULL;
 	if (position < target->size) {
 		ret = target->elements[position];
 		size_t i;
@@ -128,12 +129,12 @@ void* al_remove(struct ArrayList* target, size_t position) {
 	return ret;
 }
 
-static void quicksort(struct ArrayList* arr, size_t start, size_t end, int (*comparator)(const void* cmpl, const void* cmpr)) {
+static void quicksort(struct ArrayList *arr, size_t start, size_t end, int (*comparator)(const void* cmpl, const void* cmpr)) {
 	if (end - start <= 1) {
 		return;
 	}
 	size_t pivot = rand() % (end - start) + start;
-	void* swap = arr->elements[pivot];
+	void *swap = arr->elements[pivot];
 	arr->elements[pivot] = arr->elements[start];
 	arr->elements[start] = swap;
 
@@ -165,18 +166,23 @@ static void quicksort(struct ArrayList* arr, size_t start, size_t end, int (*com
 	quicksort(arr, j + 1, end, comparator);	
 }
 
-void sort(struct ArrayList* target, int (*comparator)(const void* cmpl, const void* cmpr)) {
+void sort(struct ArrayList *target, int (*comparator)(const void *cmpl, const void *cmpr)) {
 	time_t t;
 	srand((unsigned) time(&t));
 	quicksort(target, 0, target->size, comparator);
 }
 
-void al_clear(struct ArrayList* target) {
-	for (size_t i = 0; i < target->size; i++) {
+void al_delete(struct ArrayList *target) {
+	for (size_t i = 0; i < target->size; ++i) {
 		free(target->elements[i]);
+		target->elements[i] = NULL;
 	}
-	free(target->elements);
-	target->elements = (void**)calloc(DEFAULT_CAPACITY, sizeof(void*));
 	target->size = 0;
-	target->capacity = DEFAULT_CAPACITY;
+}
+
+void al_clear(struct ArrayList *target) {
+	for (size_t i = 0; i < target->size; ++i) {
+		target->elements[i] = NULL;
+	}
+	target->size = 0;
 }

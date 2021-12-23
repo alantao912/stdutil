@@ -5,7 +5,35 @@
 
 #include <stdio.h>
 
-static void resize(struct Set *set);
+static void resize(struct Set *set) {
+	size_t new_capacity = 2 * set->capacity + 1;
+	struct SetEntry *new_array = (struct SetEntry*) calloc(new_capacity, sizeof(struct SetEntry));
+
+	for (size_t i = 0; i < new_capacity; ++i) {
+		new_array[i].data = NULL;
+		new_array[i].removed = false;
+	}
+	
+	size_t i = 0, j = 0;
+	while (i < set->capacity && j < set->cardinality) {
+		if (set->data[i].data) {
+			if (set->data[i].removed) {
+				free(set->data[i].data);
+			} else {
+				size_t index = set->hash_function(set->data[i].data) % new_capacity;
+				while (new_array[index].data) {
+					index = ++index % new_capacity;
+				}
+				new_array[index].data = set->data[i].data;
+				++j;
+			}
+		}
+		++i;
+	}
+	free(set->data);
+	set->data = new_array;
+	set->capacity = new_capacity;
+}
 
 struct Set create_Set(size_t initial_capacity) {
 	struct Set set;
@@ -124,32 +152,19 @@ bool set_contains(struct Set *set, void *element) {
 	return false;
 }
 
-static void resize(struct Set *set) {
-	size_t new_capacity = 2 * set->capacity + 1;
-	struct SetEntry *new_array = (struct SetEntry*) calloc(new_capacity, sizeof(struct SetEntry));
+void set_clear(struct Set *set) {
+	for (size_t i = 0; i < set->capacity; ++i) {
+		set->data[i].data = NULL;
+		set->data[i].removed = false;
+	}
+	set->cardinality = 0;
+}
 
-	for (size_t i = 0; i < new_capacity; ++i) {
-		new_array[i].data = NULL;
-		new_array[i].removed = false;
+void set_delete(struct Set *set) {
+	for (size_t i = 0; i < set->capacity; ++i) {
+		free(set->data[i].data);
+		set->data[i].data = NULL;
+		set->data[i].removed = false;
 	}
-	
-	size_t i = 0, j = 0;
-	while (i < set->capacity && j < set->cardinality) {
-		if (set->data[i].data) {
-			if (set->data[i].removed) {
-				free(set->data[i].data);
-			} else {
-				size_t index = set->hash_function(set->data[i].data) % new_capacity;
-				while (new_array[index].data) {
-					index = ++index % new_capacity;
-				}
-				new_array[index].data = set->data[i].data;
-				++j;
-			}
-		}
-		++i;
-	}
-	free(set->data);
-	set->data = new_array;
-	set->capacity = new_capacity;
+	set->cardinality = 0;
 }
