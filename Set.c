@@ -35,18 +35,27 @@ static void resize(struct Set *set) {
 	set->capacity = new_capacity;
 }
 
-struct Set create_Set(size_t initial_capacity) {
-	struct Set set;
-	set.data = (struct SetEntry*) calloc(initial_capacity, sizeof(struct SetEntry));
-	for (size_t i = 0; i < initial_capacity; ++i) {
-		set.data[i].data = NULL;
-		set.data[i].removed = false;
+struct Set *create_Set(size_t initial_capacity) {
+	struct Set *set = (struct Set *) malloc(sizeof(struct Set));
+	if (!set) {
+		return NULL;
 	}
-	set.cardinality = 0;
-	set.capacity = initial_capacity;
-	set.lf = 0.67f;
-	set.hash_function = &default_hash_function;
-	set.comparator = &default_comparator;
+	set->data = (struct SetEntry *) malloc(initial_capacity * sizeof(struct SetEntry));
+
+	if (!set->data) {
+		free(set);
+		return NULL;
+	}
+
+	for (size_t i = 0; i < initial_capacity; ++i) {
+		set->data[i].data = NULL;
+		set->data[i].removed = false;
+	}
+	set->cardinality = 0;
+	set->capacity = initial_capacity;
+	set->lf = 0.67f;
+	set->hash_function = &default_hash_function;
+	set->comparator = &default_comparator;
 	return set;
 }
 

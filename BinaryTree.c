@@ -148,11 +148,14 @@ static void* getHelper(struct TreeNode *node, void *data, signed char (*comparat
 	}
 }
 
-struct Tree create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand)) {
-	struct Tree tree = {.root = NULL, .size = 0, .comparator = comparator};
+struct Tree *create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand)) {
+	struct Tree *tree = (struct Tree *) malloc(sizeof(struct Tree)); 
+	tree->root = NULL;
+	tree->size = 0;
+	tree->comparator = comparator;
 	
 	for (size_t i = 0; i < size; ++i) {
-		tree_add(&tree, array[i]);
+		tree_add(tree, array[i]);
 	}
 
 	return tree;
@@ -230,9 +233,9 @@ static void preorderHelper(struct TreeNode *node, struct ArrayList *collection) 
 	preorderHelper(node->right, collection);
 }
 
-struct ArrayList preorder(struct Tree tree) {
-	struct ArrayList collection = create_ArrayList(tree.size);
-	preorderHelper(tree.root, &collection);
+struct ArrayList preorder(struct Tree *tree) {
+	struct ArrayList collection = create_ArrayList(tree->size);
+	preorderHelper(tree->root, &collection);
 	return collection;
 }
 
@@ -245,9 +248,9 @@ static void inorderHelper(struct TreeNode *node, struct ArrayList *collection) {
 	inorderHelper(node->right, collection);
 }
 
-struct ArrayList inorder(struct Tree tree) {
-	struct ArrayList collection = create_ArrayList(tree.size);
-	inorderHelper(tree.root, &collection);
+struct ArrayList inorder(struct Tree *tree) {
+	struct ArrayList collection = create_ArrayList(tree->size);
+	inorderHelper(tree->root, &collection);
 	return collection;
 }
 
@@ -260,17 +263,17 @@ static void postorderHelper(struct TreeNode *node, struct ArrayList *collection)
 	al_append(collection, node->data);
 }
 
-struct ArrayList postorder(struct Tree tree) {
-	struct ArrayList collection = create_ArrayList(tree.size);
-	postorderHelper(tree.root, &collection);
+struct ArrayList postorder(struct Tree *tree) {
+	struct ArrayList collection = create_ArrayList(tree->size);
+	postorderHelper(tree->root, &collection);
 	return collection;
 }
 
-struct ArrayList levelorder(struct Tree tree) {
+struct ArrayList levelorder(struct Tree *tree) {
 	struct Queue node_queue = create_Queue(8);
-	struct ArrayList data = create_ArrayList(tree.size);
+	struct ArrayList data = create_ArrayList(tree->size);
 
-	enqueue(&node_queue, tree.root);
+	enqueue(&node_queue, tree->root);
 	
 	while (node_queue.size > 0) {
 		struct TreeNode *current = (struct TreeNode*) dequeue(&node_queue);

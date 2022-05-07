@@ -56,7 +56,7 @@ struct Set {
 	Initializes an empty set with the specified initial capacity using default hash function and comparator.
 */
 
-struct Set create_Set(size_t initial_capacity);
+struct Set *create_Set(size_t initial_capacity);
 
 /*
 	Adds an element to the set. If the element was already present in the set, this function will leave the set unchanged and return false.

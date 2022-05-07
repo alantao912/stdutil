@@ -10,7 +10,7 @@ struct ArrayList create_ArrayList(size_t initial_capacity) {
 		initial_capacity = DEFAULT_CAPACITY;
 	}
 	struct ArrayList new;
-	new.elements = (void**) calloc(initial_capacity, sizeof(void*));
+	new.elements = (void**) malloc(initial_capacity * sizeof(void*));
 	for (size_t i = 0; i < initial_capacity; i++) {
 		new.elements[i] = NULL;
 	}
@@ -24,7 +24,7 @@ bool al_append(struct ArrayList *target, void *element) {
 		target->elements[target->size] = element;
 		++target->size;
 	} else {
-		void **new = calloc(target->capacity * 2, sizeof(void*));
+		void **new = malloc(target->capacity * 2 * sizeof(void*));
 		if (!new) {
 			return false;
 		}
@@ -50,7 +50,7 @@ bool al_addAt(struct ArrayList *target, size_t position, void *element) {
 		}
 		target->elements[position] = element;
 	} else {
-		void **new = (void**) calloc(target->capacity * 2, sizeof(void*));
+		void **new = (void**) malloc(target->capacity * 2 * sizeof(void*));
 		if (!new) {
 			return false;
 		}
@@ -80,7 +80,7 @@ size_t al_capacity(struct ArrayList* target) {
 
 bool al_ensure_capacity(struct ArrayList* target, size_t new_capacity) {
 	if (new_capacity >= target->size) {
-		void **new = (void**) calloc(new_capacity, sizeof(void*));
+		void **new = (void**) malloc(new_capacity * sizeof(void*));
 		if (!new) {
 			return false;
 		}

@@ -71,7 +71,7 @@ struct Tree {
 	Leaves original array and elements of the original array unchanged.
 */
 
-struct Tree create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand));
+struct Tree *create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand));
 
 /*
 	Adds a new node containing the specified data to its correct position within the tree, and increments size.
@@ -117,24 +117,24 @@ void tree_delete(struct Tree *tree);
 	Returns an arraylist of data stored in the tree from a preorder traversal.
 */
 
-struct ArrayList preorder(struct Tree tree);
+struct ArrayList preorder(struct Tree *tree);
 
 /*
 	Returns an arraylist of data stored in the tree from an inorder traversal.
 */
 
-struct ArrayList inorder(struct Tree tree);
+struct ArrayList inorder(struct Tree *tree);
 
 /*
 	Returns an arraylist of data stored in the tree from a postorder traversal.
 */
 
-struct ArrayList postorder(struct Tree tree);
+struct ArrayList postorder(struct Tree *tree);
 
 /*
 	Returns an arraylist of data stored in the tree from a levelorder traversal.
 */
 
-struct ArrayList levelorder(struct Tree tree);
+struct ArrayList levelorder(struct Tree *tree);
 
 #endif
