@@ -9,7 +9,7 @@ struct SetEntry {
 	bool removed;
 };
 
-typedef struct Set {
+typedef struct set {
 
 	/* Backing array for the elements in the set. */	
 
@@ -56,7 +56,7 @@ typedef struct Set {
 	Initializes an empty set with the specified initial capacity using default hash function and comparator.
 */
 
-struct Set *create_Set(size_t initial_capacity);
+struct set *create_Set(size_t initial_capacity);
 
 /*
 	Adds an element to the set. If the element was already present in the set, this function will leave the set unchanged and return false.
@@ -65,7 +65,7 @@ struct Set *create_Set(size_t initial_capacity);
 	Returns false if specified element is null or OOM exception occurs
 */
 
-bool set_add(struct Set *set, void *element);
+bool set_add(struct set *set, void *element);
 
 /*
 	Removes an element from the set. If the element is present within the set, removes it and returns a pointer to the data it stored.
@@ -74,24 +74,24 @@ bool set_add(struct Set *set, void *element);
 	Returns NULL if specified element is NULL.
 */
 
-void *set_remove(struct Set *set, void *element);
+void *set_remove(struct set *set, void *element);
 
 /*
 	Returns true if the specified element is contained within the set, false otherwise.
 */
 
-bool set_contains(struct Set *set, void *element);
+bool set_contains(struct set *set, void *element);
 
 /*
 	Removes every element within the set.
 */
 
-void set_clear(struct Set *set);
+void set_clear(struct set *set);
 
 /*
 	Removes and frees every element from within the set.
 */
 
-void set_delete(struct Set *set);
+void set_delete(struct set *set);
 
 #endif

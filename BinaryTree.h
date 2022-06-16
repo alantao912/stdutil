@@ -71,7 +71,7 @@ struct Tree {
 	Leaves original array and elements of the original array unchanged.
 */
 
-struct Tree *create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand));
+struct Tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand));
 
 /*
 	Adds a new node containing the specified data to its correct position within the tree, and increments size.

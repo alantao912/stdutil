@@ -3,3 +3,4 @@
 *.o
 Test.c
 *.bmp
+.vscode

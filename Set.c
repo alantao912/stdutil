@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-static bool resize(struct Set *set) {
+static bool resize(struct set *set) {
 	size_t new_capacity = 2 * set->capacity + 1;
 	struct SetEntry *new_array = (struct SetEntry*) malloc(new_capacity * sizeof(struct SetEntry));
 
@@ -40,8 +40,8 @@ static bool resize(struct Set *set) {
 	return true;
 }
 
-struct Set *create_Set(size_t initial_capacity) {
-	struct Set *set = (struct Set *) malloc(sizeof(struct Set));
+struct set *create_Set(size_t initial_capacity) {
+	struct set *set = (struct set *) malloc(sizeof(struct set));
 	if (!set) {
 		return NULL;
 	}
@@ -64,7 +64,7 @@ struct Set *create_Set(size_t initial_capacity) {
 	return set;
 }
 
-bool set_add(struct Set *set, void *element) {
+bool set_add(struct set *set, void *element) {
 	if (!element) {
 		return false;
 	}
@@ -114,7 +114,7 @@ bool set_add(struct Set *set, void *element) {
 	return false;
 }
 
-void *set_remove(struct Set *set, void *element) {
+void *set_remove(struct set *set, void *element) {
 	if (!element) {
 		return NULL;
 	}
@@ -141,7 +141,7 @@ void *set_remove(struct Set *set, void *element) {
 	return NULL;
 }
 
-bool set_contains(struct Set *set, void *element) {
+bool set_contains(struct set *set, void *element) {
 	if (!element) {
 		return false;
 	}
@@ -162,7 +162,7 @@ bool set_contains(struct Set *set, void *element) {
 	return false;
 }
 
-void set_clear(struct Set *set) {
+void set_clear(struct set *set) {
 	for (size_t i = 0; i < set->capacity; ++i) {
 		set->data[i].data = NULL;
 		set->data[i].removed = false;
@@ -170,7 +170,7 @@ void set_clear(struct Set *set) {
 	set->cardinality = 0;
 }
 
-void set_delete(struct Set *set) {
+void set_delete(struct set *set) {
 	for (size_t i = 0; i < set->capacity; ++i) {
 		free(set->data[i].data);
 		set->data[i].data = NULL;

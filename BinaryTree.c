@@ -148,7 +148,7 @@ static void* getHelper(struct TreeNode *node, void *data, signed char (*comparat
 	}
 }
 
-struct Tree *create_tree(void **array, size_t size, signed char (*comparator)(const void *loperand, const void *roperand)) {
+struct Tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand)) {
 	struct Tree *tree = (struct Tree *) malloc(sizeof(struct Tree)); 
 	tree->root = NULL;
 	tree->size = 0;
