@@ -2,69 +2,70 @@
 #define UTIL_LINKEDLIST_H
 
 #include <stdbool.h>
-#include "ArrayList.h"
+#include <stdlib.h>
+#include <string.h>
 
-struct ListNode {
+typedef struct list_node {
 	void *element;
-	struct ListNode *next;
-};
+	struct list_node *next;
+} list_node;
 
-struct LinkedList {
-	struct ListNode *head, *iterator, *tail;
+typedef struct linked_list {
+	list_node *head, *iterator, *tail;
 	size_t size;
-};
+} linked_list;
 
 /*
 	Creates a linked list and initializes it to the size specified by
 	[initial_size] by creating the necessary list nodes;
 */
 
-struct LinkedList array_to_linkedlist(void **array, size_t size);
+linked_list *array_to_linkedlist(void **array, size_t size);
 
 /*
 	Creates and initializes an empty linked list
 */
 
-struct LinkedList create_linkedlist();
+linked_list *create_linkedlist();
 
 /*
 	Creates a new list node with the specified data and prepends it to the front of the linked list.
 */
 
-void add_first(struct LinkedList* target, void* element);
+void add_first(linked_list *target, void* element);
 
 /*
 	Creates a new list node with the data specified by [element] and appends it
 	to the end of the linked list.
 */
 
-void add_last(struct LinkedList* target, void* element);
+void add_last(linked_list *target, void* element);
 
 /*
 	Inserts a new list node with the data specified by [element] and inserts it to
 	the position in the linked list specified by [position]
 */
 
-void ll_addAt(struct LinkedList* target, size_t position, void* element);
+void ll_addAt(linked_list *target, size_t position, void* element);
 
 /*
 	Overwrites the data in the list node specified by [position] with the new
 	data [element]
 */
 
-void* ll_set(struct LinkedList* target, size_t position, void* element);
+void* ll_set(linked_list *target, size_t position, void* element);
 
 /*
 	Returns the number of nodes in the linked list
 */
 
-size_t ll_size(struct LinkedList* target);
+size_t ll_size(linked_list *target);
 
 /*
 	Returns a pointer to the data stored in the list node specified by [index]
 */
 
-void* ll_get(struct LinkedList* target, size_t index);
+void* ll_get(linked_list *target, size_t index);
 
 /*
 	Returns the data stored in the list node that the iterator was originally pointing at
@@ -74,25 +75,25 @@ void* ll_get(struct LinkedList* target, size_t index);
 	head of the linked list.
 */
 
-void* next(struct LinkedList* target);
+void* next(linked_list *target);
 
 /*
 	Returns true if the iterator is not pointing to the last element of the linked list
 */
 
-bool hasNext(struct LinkedList* target);
+bool hasNext(linked_list *target);
 
 /*
 	Resets the iterator to the head of the linked list.
 */
 
-void reset(struct LinkedList* target);
+void reset(linked_list *target);
 
 /*
 	Deletes the list node specified by [position] and returns the data stored by that list node.
 */
 
-void* ll_remove(struct LinkedList* target, size_t position);
+void* ll_remove(linked_list *target, size_t position);
 
 /*
 	Frees every node within the linkedlist. Sets head, tail, and iterator to null. Sets size to 0.
@@ -100,7 +101,7 @@ void* ll_remove(struct LinkedList* target, size_t position);
 	Leaves data within the linkedlist unchanged.
 */
 
-void ll_clear(struct LinkedList* target);
+void ll_clear(linked_list *target);
 
 /*
 	Frees every node within the linkedlist. Sets head, tail, and iterator to null. Sets size to 0.
@@ -108,7 +109,7 @@ void ll_clear(struct LinkedList* target);
 	Frees data within the linkedlist.
 */
 
-void ll_delete(struct LinkedList *target);
+void ll_delete(linked_list *target);
 
 /*
 	Attaches the linked list [right_list] to the end of [left_list]
@@ -116,7 +117,7 @@ void ll_delete(struct LinkedList *target);
 	right_list is NOT freed as a result of this operation
 */
 
-void join(struct LinkedList* left_list, struct LinkedList* right_list);
+void join(linked_list *left_list, linked_list *right_list);
 
 /*
 	Splits the specified linkedlist at the index split (inclusive).
@@ -124,6 +125,6 @@ void join(struct LinkedList* left_list, struct LinkedList* right_list);
 	Returns the split linked list.
 */
 
-struct LinkedList split(struct LinkedList* target, size_t split);
+linked_list *split(linked_list *target, size_t split);
 
 #endif

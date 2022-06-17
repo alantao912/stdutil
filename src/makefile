@@ -1,35 +1,35 @@
-a: Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o PriorityQueue.o
-	gcc Test.o ArrayList.o Primitives.o Stack.o LinkedList.o BinaryTree.o Matrix.o ImageBMP.o Queue.o HashMap.o Set.o PriorityQueue.o -o a
+a: test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o Queue.o hashmap.o Set.o PriorityQueue.o
+	gcc test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o Queue.o hashmap.o Set.o PriorityQueue.o -o a
 
-Test.o: Test.c
-	gcc -c Test.c
+test.o: test.c
+	gcc -c test.c
 
-ArrayList.o: ArrayList.c ArrayList.h
-	gcc -c ArrayList.c
+arraylist.o: arraylist.c arraylist.h
+	gcc -c arraylist.c
 
-Primitives.o: Primitives.c Primitives.h
-	gcc -c Primitives.c
+primitives.o: primitives.c primitives.h
+	gcc -c primitives.c
 
-Stack.o: Stack.c Stack.h
-	gcc -c Stack.c
+stack.o: stack.c stack.h
+	gcc -c stack.c
 
-LinkedList.o: LinkedList.c LinkedList.h
-	gcc -c LinkedList.c
+linked_list.o: linked_list.c linked_list.h
+	gcc -c linked_list.c
 
-BinaryTree.o: BinaryTree.c BinaryTree.h
-	gcc -c BinaryTree.c
+avl_tree.o: avl_tree.c avl_tree.h
+	gcc -c avl_tree.c
 
-Matrix.o: Matrix.c Matrix.h
-	gcc -c Matrix.c
+matrix.o: matrix.c matrix.h
+	gcc -c matrix.c
 
-ImageBMP.o: ImageBMP.c ImageBMP.h
-	gcc -c ImageBMP.c
+bmp_image.o: bmp_image.c bmp_image.h
+	gcc -c bmp_image.c
 
 Queue.o: Queue.c Queue.h
 	gcc -c Queue.c
 
-HashMap.o: HashMap.c HashMap.h
-	gcc -c HashMap.c
+hashmap.o: hashmap.c hashmap.h
+	gcc -c hashmap.c
 
 Set.o: Set.c Set.h
 	gcc -c Set.c

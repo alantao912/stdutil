@@ -1,8 +1,8 @@
 #include <stdlib.h>
-#include "BinaryTree.h"
+#include "avl_tree.h"
 #include "Queue.h"
 
-static void update(struct TreeNode *node) {
+static void update(treenode *node) {
 	int leftHeight = -1;
 	
 	if (node->left) {
@@ -19,8 +19,8 @@ static void update(struct TreeNode *node) {
 	node->bf = (signed char) (leftHeight - rightHeight);
 }
 
-static struct TreeNode* leftRotation(struct TreeNode *node) {
-	struct TreeNode *b = node->right;
+static treenode *leftRotation(treenode *node) {
+	treenode *b = node->right;
 	node->right = b->left;
 	b->left = node;
 	update(node);
@@ -28,8 +28,8 @@ static struct TreeNode* leftRotation(struct TreeNode *node) {
 	return b;
 }
 
-static struct TreeNode* rightRotation(struct TreeNode *node) {
-	struct TreeNode *b = node->left;
+static treenode *rightRotation(treenode *node) {
+	treenode *b = node->left;
 	node->left = b->right;
 	b->right = node;
 	update(node);
@@ -37,27 +37,27 @@ static struct TreeNode* rightRotation(struct TreeNode *node) {
 	return b;
 }
 
-static struct TreeNode* leftRightRotation(struct TreeNode *node) {
+static treenode *leftRightRotation(treenode *node) {
 	node->left = leftRotation(node->left);
 	return rightRotation(node);
 }
 
-static struct TreeNode* rightLeftRotation(struct TreeNode *node) {
+static treenode *rightLeftRotation(treenode *node) {
 	node->right = rightRotation(node->right);
 	return leftRotation(node);
 }
 
-static struct TreeNode* findSuccessor(struct TreeNode *node) {
-	struct TreeNode *iterator = node->right;
+static treenode *findSuccessor(treenode *node) {
+	treenode *iterator = node->right;
 	while (iterator->left) {
 		iterator = iterator->left;
 	}
 	return iterator;
 }
 
-static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static treenode *addHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
-		struct TreeNode *child = (struct TreeNode*) malloc(sizeof(struct TreeNode));
+		treenode *child = (treenode*) malloc(sizeof(treenode));
 		child->left = NULL;
 		child->right = NULL;
 		child->data = data;
@@ -92,7 +92,7 @@ static struct TreeNode* addHelper(struct TreeNode *node, void *data, signed char
 	return node;
 }
 
-static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static treenode *removeHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}
@@ -110,7 +110,7 @@ static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed c
 	} else if (!node->right) {
 		return node->right;
 	} else {
-		struct TreeNode *successor = findSuccessor(node);
+		treenode *successor = findSuccessor(node);
 		node->data = successor->data;
 		node->count = successor->count;
 		successor->count = 1;
@@ -133,7 +133,7 @@ static struct TreeNode* removeHelper(struct TreeNode *node, void *data, signed c
 	return node;
 }
 
-static void* getHelper(struct TreeNode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static void *getHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}
@@ -148,8 +148,8 @@ static void* getHelper(struct TreeNode *node, void *data, signed char (*comparat
 	}
 }
 
-struct Tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand)) {
-	struct Tree *tree = (struct Tree *) malloc(sizeof(struct Tree)); 
+struct tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand)) {
+	struct tree *tree = (struct tree *) malloc(sizeof(struct tree)); 
 	tree->root = NULL;
 	tree->size = 0;
 	tree->comparator = comparator;
@@ -161,7 +161,7 @@ struct Tree *create_tree(void **array, size_t size, const signed char (*comparat
 	return tree;
 }
 
-void tree_add(struct Tree *tree, void *data) {
+void tree_add(struct tree *tree, void *data) {
 	if (!data) {
 		return;
 	}
@@ -169,7 +169,7 @@ void tree_add(struct Tree *tree, void *data) {
 	++tree->size;
 }
 
-void* tree_remove(struct Tree *tree, void *data) {
+void *tree_remove(struct tree *tree, void *data) {
 	if (!data) {
 		return NULL;
 	}
@@ -184,14 +184,14 @@ void* tree_remove(struct Tree *tree, void *data) {
 	return found;
 }
 
-void* tree_get(struct Tree *tree, void *data) {
+void *tree_get(struct tree *tree, void *data) {
 	if (!data) {
 		return NULL;
 	}
 	return getHelper(tree->root, data, tree->comparator);
 }
 
-static void tree_clear_helper(struct TreeNode *node) {
+static void tree_clear_helper(treenode *node) {
 	if (!node) {
 		return;
 	}
@@ -201,13 +201,13 @@ static void tree_clear_helper(struct TreeNode *node) {
 	free(node);
 }
 
-void tree_clear(struct Tree *tree) {
+void tree_clear(struct tree *tree) {
 	tree_clear_helper(tree->root);
 	tree->root = NULL;
 	tree->size = 0;	
 }
 
-static void tree_delete_helper(struct TreeNode *node) {
+static void tree_delete_helper(treenode *node) {
 	if (!node) {
 		return;
 	}
@@ -218,66 +218,66 @@ static void tree_delete_helper(struct TreeNode *node) {
 	free(node);
 }
 
-void tree_delete(struct Tree *tree) {
+void tree_delete(struct tree *tree) {
 	tree_delete_helper(tree->root);
 	tree->root = NULL;
 	tree->size = 0;	
 }
 
-static void preorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+static void preorderHelper(treenode *node, arraylist *collection) {
 	if (!node) {
 		return;
 	}
-	al_append(collection, node->data);
+	al_add(collection, node->data);
 	preorderHelper(node->left, collection);
 	preorderHelper(node->right, collection);
 }
 
-struct ArrayList preorder(struct Tree *tree) {
-	struct ArrayList collection = create_ArrayList(tree->size);
-	preorderHelper(tree->root, &collection);
+arraylist *preorder(struct tree *tree) {
+	arraylist *collection = create_arraylist(tree->size);
+	preorderHelper(tree->root, collection);
 	return collection;
 }
 
-static void inorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+static void inorderHelper(treenode *node, arraylist *collection) {
 	if (!node) {
 		return;
 	}
 	inorderHelper(node->left, collection);
-	al_append(collection, node->data);
+	al_add(collection, node->data);
 	inorderHelper(node->right, collection);
 }
 
-struct ArrayList inorder(struct Tree *tree) {
-	struct ArrayList collection = create_ArrayList(tree->size);
-	inorderHelper(tree->root, &collection);
+arraylist *inorder(struct tree *tree) {
+	arraylist *collection = create_arraylist(tree->size);
+	inorderHelper(tree->root, collection);
 	return collection;
 }
 
-static void postorderHelper(struct TreeNode *node, struct ArrayList *collection) {
+static void postorderHelper(treenode *node, arraylist *collection) {
 	if (!node) {
 		return;
 	}
 	postorderHelper(node->left, collection);
 	postorderHelper(node->right, collection);
-	al_append(collection, node->data);
+	al_add(collection, node->data);
 }
 
-struct ArrayList postorder(struct Tree *tree) {
-	struct ArrayList collection = create_ArrayList(tree->size);
-	postorderHelper(tree->root, &collection);
+arraylist *postorder(struct tree *tree) {
+	arraylist *collection = create_arraylist(tree->size);
+	postorderHelper(tree->root, collection);
 	return collection;
 }
 
-struct ArrayList levelorder(struct Tree *tree) {
+arraylist *levelorder(struct tree *tree) {
 	struct Queue node_queue = create_Queue(8);
-	struct ArrayList data = create_ArrayList(tree->size);
+	arraylist *data = create_arraylist(tree->size);
 
 	enqueue(&node_queue, tree->root);
 	
 	while (node_queue.size > 0) {
-		struct TreeNode *current = (struct TreeNode*) dequeue(&node_queue);
-		al_append(&data, current->data);
+		treenode *current = (treenode*) dequeue(&node_queue);
+		al_add(data, current->data);
 		
 		if (current->left) {
 			enqueue(&node_queue, current->left);
@@ -287,5 +287,6 @@ struct ArrayList levelorder(struct Tree *tree) {
 			enqueue(&node_queue, current->right);			
 		}
 	}
+	free(node_queue.data);
 	return data;
 }

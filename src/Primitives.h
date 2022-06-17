@@ -1,16 +1,18 @@
 #ifndef UTIL_PRIMITIVES_H
 #define UTIL_PRIMITIVES_H
 
-int* Integer(int i);
+#include <stdlib.h>
 
-double* Double(double d);
+int *Integer(int i);
 
-float* Float(float f);
+double *Double(double d);
 
-char* Character(char c);
+float *Float(float f);
 
-short* Short(short s);
+char *Character(char c);
 
-long* Long(long l);
+short *Short(short s);
+
+long *Long(long l);
 
 #endif

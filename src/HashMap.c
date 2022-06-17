@@ -1,13 +1,8 @@
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <math.h>
-#include <limits.h>
-#include "HashMap.h"
+#include "hashmap.h"
 
-static void resize(struct HashMap *map) {
+static void resize(hashmap *map) {
 	size_t new_capacity = 2 * map->capacity + 1;
-	struct MapEntry **new_table = (struct MapEntry**) calloc(new_capacity, sizeof(struct MapEntry*));
+	map_entry **new_table = (map_entry**) calloc(new_capacity, sizeof(map_entry*));
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		if (map->table[i]) {
@@ -30,9 +25,9 @@ static void resize(struct HashMap *map) {
 	map->capacity = new_capacity;
 }
 
-struct HashMap create_HashMap(size_t initial_capacity, float lf) {
-	struct HashMap hm;
-	hm.table = (struct MapEntry**) calloc(initial_capacity, sizeof(struct MapEntry*));
+hashmap create_HashMap(size_t initial_capacity, float lf) {
+	hashmap hm;
+	hm.table = (map_entry**) malloc(initial_capacity * sizeof(map_entry*));
 	hm.capacity = initial_capacity;
 	hm.size = 0;
 	hm.load_factor = lf;
@@ -41,7 +36,7 @@ struct HashMap create_HashMap(size_t initial_capacity, float lf) {
 	return hm;
 }
 
-void* hm_put(struct HashMap *map, void *key, void *value) {
+void* hm_put(hashmap *map, void *key, void *value) {
 	
 	if (((float) map->size + 1) / map->capacity > map->load_factor) {
 		resize(map);
@@ -57,7 +52,7 @@ void* hm_put(struct HashMap *map, void *key, void *value) {
 				free(map->table[removedIndex]->key);
 				map->table[removedIndex]->key = key;
 			} else {
-				map->table[index] = (struct MapEntry*) malloc(sizeof(struct MapEntry));
+				map->table[index] = (map_entry*) malloc(sizeof(map_entry));
 				map->table[index]->key = key;
 				map->table[index]->value = value;
 			}
@@ -99,7 +94,7 @@ void* hm_put(struct HashMap *map, void *key, void *value) {
 	return NULL;
 }
 
-void* hm_remove(struct HashMap *map, void *key) {
+void* hm_remove(hashmap *map, void *key) {
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity;
 	while (i < map->capacity && j < map->size) {
 		if (!map->table[index]) {
@@ -121,7 +116,7 @@ void* hm_remove(struct HashMap *map, void *key) {
 	return NULL;	
 }
 
-void* hm_get(struct HashMap *map, void *key) {
+void* hm_get(hashmap *map, void *key) {
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity;
 	while (i < map->capacity && j < map->size) {
 		if (!map->table[index]) {
@@ -141,16 +136,16 @@ void* hm_get(struct HashMap *map, void *key) {
 	return NULL;
 }
 
-bool hm_containsKey(struct HashMap *map, void *key) {
+bool hm_containsKey(hashmap *map, void *key) {
 	return hm_get(map, key) != NULL;
 }
 
-struct ArrayList keySet(struct HashMap *map) {
-	struct ArrayList keySet = create_ArrayList(map->size);
+arraylist *keySet(hashmap *map) {
+	arraylist *keySet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		if (map->table[i] && !map->table[i]->removed) {
-			al_append(&keySet, map->table[i]->key);
+			al_add(keySet, map->table[i]->key);
 			++j;
 		}
 		++i;
@@ -158,12 +153,12 @@ struct ArrayList keySet(struct HashMap *map) {
 	return keySet;
 }
 
-struct ArrayList values(struct HashMap *map) {
-	struct ArrayList valueSet = create_ArrayList(map->size);
+arraylist *values(hashmap *map) {
+	arraylist *valueSet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		if (map->table[i] && !map->table[i]->removed) {
-			al_append(&valueSet, map->table[i]->value);
+			al_add(valueSet, map->table[i]->value);
 			++j;
 		}
 		++i;
@@ -182,7 +177,7 @@ bool default_comparator(const void *key0, const void *key1) {
 	return key0 == key1;
 }
 
-void hm_clear(struct HashMap *map) {
+void hm_clear(hashmap *map) {
 	for (size_t i = 0; i < map->capacity; ++i) {
 		free(map->table[i]);
 		map->table[i] = NULL;
@@ -190,9 +185,9 @@ void hm_clear(struct HashMap *map) {
 	map->size = 0;
 }
 
-void hm_delete(struct HashMap *map) {
+void hm_delete(hashmap *map) {
 	for (size_t i = 0; i < map->capacity; ++i) {
-		struct MapEntry *current = map->table[i];
+		map_entry *current = map->table[i];
 		if (current) {
 			free(current->key);
 			free(current->value);

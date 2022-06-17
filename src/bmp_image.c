@@ -1,11 +1,10 @@
-#include "ImageBMP.h"
-#include <string.h>
+#include "bmp_image.h"
 
 static const size_t FILE_HEADER_SIZE = 14;
 
-struct Image_BMP openImageBMP(const char* path) 
+bmp_image openImageBMP(const char *path) 
 {
-	struct Image_BMP image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL, .trailer = NULL};
+	bmp_image image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL, .trailer = NULL};
 	FILE* img = fopen(path, "rb");
 	if (img) {
 		image.file_header = (unsigned char*) malloc(FILE_HEADER_SIZE * sizeof(unsigned char));
@@ -43,7 +42,7 @@ struct Image_BMP openImageBMP(const char* path)
 		image.width = *(int*)&image.bitmap_header[4];
 		image.height = *(int*)&image.bitmap_header[8];
 
-		image.pixels = (struct Pixel*) malloc(image.width * image.height * sizeof(struct Pixel));
+		image.pixels = (pixel*) malloc(image.width * image.height * sizeof(pixel));
 		if (!image.pixels) {
 			free(image.file_header);
 			image.file_header = NULL;
@@ -106,13 +105,13 @@ struct Image_BMP openImageBMP(const char* path)
 	return image;
 }
 
-struct Pixel* getPixelAt(struct Image_BMP* image, unsigned int col, unsigned int row) {
+pixel* getPixelAt(bmp_image* image, unsigned int col, unsigned int row) {
 	unsigned int num_pixels = image->width * image->height;
 	unsigned int index = row * image->width + image->width - col;
 	return &(image->pixels[num_pixels - 1 - row * image->width - image->width + col]);
 }
 
-bool save_ImageBMP(struct Image_BMP* image, const char* location) {
+bool save_ImageBMP(bmp_image* image, const char* location) {
 	FILE* dest = fopen(location, "wb");
 	if (!dest) {
 		return false;
@@ -140,7 +139,7 @@ bool save_ImageBMP(struct Image_BMP* image, const char* location) {
 	return true;
 }
 
-void dispose_ImageBMP(struct Image_BMP* image) {
+void dispose_ImageBMP(bmp_image* image) {
 	image->width = 0;
 	image->height = 0;
 	free(image->file_header);
@@ -151,8 +150,8 @@ void dispose_ImageBMP(struct Image_BMP* image) {
 	image->pixels = NULL;
 }
 
-struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
-	struct Image_BMP convolved_image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL};
+bmp_image convolution(bmp_image* image, struct fMatrix* kernel) {
+	bmp_image convolved_image = {.width = 0, .height = 0, .file_header = NULL, .bitmap_header = NULL, .pixels = NULL};
 
 	if (kernel->rows % 2 == 0 || kernel->cols % 2 == 0) {
 		return convolved_image;
@@ -181,7 +180,7 @@ struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
 	
 	short bpp = *(short*)&image->bitmap_header[14];
 	
-	convolved_image.pixels = (struct Pixel*) malloc(convolved_image.width * convolved_image.height * sizeof(struct Pixel));
+	convolved_image.pixels = (pixel*) malloc(convolved_image.width * convolved_image.height * sizeof(pixel));
 	if (!convolved_image.pixels) {
 		free(convolved_image.file_header);
 		convolved_image.file_header = NULL;
@@ -191,7 +190,7 @@ struct Image_BMP convolution(struct Image_BMP* image, struct fMatrix* kernel) {
 		convolved_image.height = 0;
 		return convolved_image;
 	}
-	memset(convolved_image.pixels, 255, convolved_image.width * convolved_image.height * sizeof(struct Pixel));
+	memset(convolved_image.pixels, 255, convolved_image.width * convolved_image.height * sizeof(pixel));
 	
 	
 	float *accumulator = (float*) malloc(bpp * sizeof(float) / 8);

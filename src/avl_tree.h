@@ -1,9 +1,9 @@
 #ifndef UTIL_BINARYTREE_H
 #define UTIL_BINARYTREE_H
 
-#include "ArrayList.h"
+#include "arraylist.h"
 
-struct TreeNode {
+typedef struct treenode {
 
 	/*
 		Generic data to data contained in tree node
@@ -17,7 +17,7 @@ struct TreeNode {
 		A value of 'NULL' represents no child.
 	*/
 
-	struct TreeNode *left, *right;
+	struct treenode *left, *right;
 	
 	/*
 		Maximum number of tree levels below current node.
@@ -38,15 +38,15 @@ struct TreeNode {
 	*/
 
 	unsigned int count;
-};
+} treenode;
 
-struct Tree {
+typedef struct tree {
 
 	/*
 		Pointer to the root of the tree.
 	*/
 
-	struct TreeNode *root;
+	treenode *root;
 	
 	/*
 		Total number of nodes within the tree.
@@ -63,7 +63,7 @@ struct Tree {
 	*/
 
 	const signed char (*comparator)(const void *loperand, const void *roperand);
-};
+} tree;
 
 /*
 	Takes data contained in an array, and constructs a balanced tree.
@@ -71,7 +71,7 @@ struct Tree {
 	Leaves original array and elements of the original array unchanged.
 */
 
-struct Tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand));
+tree *create_tree(void **array, size_t size, const signed char (*comparator)(const void *loperand, const void *roperand));
 
 /*
 	Adds a new node containing the specified data to its correct position within the tree, and increments size.
@@ -79,7 +79,7 @@ struct Tree *create_tree(void **array, size_t size, const signed char (*comparat
 	Maintains that the tree is balanced.
 */
 
-void tree_add(struct Tree *tree, void *data);
+void tree_add(tree *t, void *data);
 
 /*
 	Removes and returns the node containing the specified data from the tree, and decrements size.
@@ -87,7 +87,7 @@ void tree_add(struct Tree *tree, void *data);
 	Maintains that the tree is balanced.	
 */
 
-void* tree_remove(struct Tree *tree, void *data);
+void *tree_remove(tree *t, void *data);
 
 /*
 	Searches for and returns the data specified from the tree.
@@ -95,7 +95,7 @@ void* tree_remove(struct Tree *tree, void *data);
 	Leaves the tree unchanged.
 */
 
-void* tree_get(struct Tree *tree, void *data);
+void *tree_get(tree *t, void *data);
 
 /*
 	Frees every node within the tree, sets root to NULL, and sets size to 0.
@@ -103,7 +103,7 @@ void* tree_get(struct Tree *tree, void *data);
 	Does not free data stored within the tree.
 */
 
-void tree_clear(struct Tree *tree);
+void tree_clear(tree *t);
 
 /*
 	Frees every node within the tree, sets root to NULL, and sets size to 0.
@@ -111,30 +111,30 @@ void tree_clear(struct Tree *tree);
 	Frees data stored within the tree.
 */
 
-void tree_delete(struct Tree *tree);
+void tree_delete(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from a preorder traversal.
 */
 
-struct ArrayList preorder(struct Tree *tree);
+struct arraylist *preorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from an inorder traversal.
 */
 
-struct ArrayList inorder(struct Tree *tree);
+struct arraylist *inorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from a postorder traversal.
 */
 
-struct ArrayList postorder(struct Tree *tree);
+struct arraylist *postorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from a levelorder traversal.
 */
 
-struct ArrayList levelorder(struct Tree *tree);
+struct arraylist *levelorder(tree *t);
 
 #endif

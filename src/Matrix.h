@@ -1,28 +1,32 @@
 #ifndef STDUTIL_MATRIX_H
 #define STDUTIL_MATRIX_H
 
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-struct fMatrix {
-	float* elements;
+typedef struct fMatrix {
+	float *elements;
 	size_t rows, cols;
-};
+} fMatrix;
 
-struct fMatrix create_fMatrix(size_t rows, size_t cols);
+fMatrix create_fMatrix(size_t rows, size_t cols);
 
-float fMatrix_get(struct fMatrix* mat, size_t row, size_t col);
+float fMatrix_get(fMatrix *mat, size_t row, size_t col);
 
-bool fMatrix_set(struct fMatrix* mat, size_t row, size_t col, float data);
+bool fMatrix_set(fMatrix *mat, size_t row, size_t col, float data);
 
-struct fMatrix fMatrix_multiply(struct fMatrix lmat, struct fMatrix rmat);
+fMatrix fMatrix_multiply(fMatrix lmat, fMatrix rmat);
 
-struct fMatrix fMatrix_add(struct fMatrix lmat, struct fMatrix rmat);
+fMatrix fMatrix_add(fMatrix lmat, fMatrix rmat);
 
-float fMatrix_determinant(struct fMatrix* mat);
+float fMatrix_determinant(fMatrix *mat);
 
-void fMatrix_scale(struct fMatrix* mat, float scalar);
+void fMatrix_scale(fMatrix *mat, float scalar);
 
-void fMatrix_print(struct fMatrix* mat);
+void fMatrix_print(fMatrix *mat);
 
 #endif

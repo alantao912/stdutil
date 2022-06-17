@@ -1,28 +1,31 @@
 #ifndef UTIL_STACK_H
 #define UTIL_STACK_H
 
-#include "ArrayList.h"
+#include <stdbool.h>
+#include <string.h>
+#include "arraylist.h"
 
-struct Stack {
-	struct ArrayList elements;
-};
+typedef struct stack {
+	void **elements;
+	size_t size, capacity;
+} stack;
 
-struct Stack create_Stack(size_t initial_capacity);
+stack *create_stack(size_t initial_capacity);
 
-void push(struct Stack *target, void *element);
+bool push(stack *target, void *element);
 
-void* peek(struct Stack *target);
+void* peek(stack *target);
 
-void* pop(struct Stack *target);
+void* pop(stack *target);
 
-size_t s_size(struct Stack *target);
+size_t s_size(stack *target);
 
-size_t s_capacity(struct Stack *target);
+size_t s_capacity(stack *target);
 
-void s_ensure_capacity(struct Stack *target, size_t new_capacity);
+bool s_ensure_capacity(stack *target, size_t new_capacity);
 
-void s_clear(struct Stack *target);
+void s_clear(stack *target);
 
-void s_delete(struct Stack *target);
+void s_delete(stack *target);
 
 #endif

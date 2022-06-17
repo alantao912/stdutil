@@ -3,16 +3,19 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include "ArrayList.h"
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include "arraylist.h"
 
-struct MapEntry {
+typedef struct map_entry {
 	void *key;
 	void *value;
 	bool removed;
-};
+} map_entry;
 
-struct HashMap {
-	struct MapEntry **table;
+typedef struct hashmap {
+	map_entry **table;
 	size_t capacity;
 	size_t size;
 	float load_factor;
@@ -39,7 +42,7 @@ struct HashMap {
 	*/
 
 	bool (*comparator)(const void *key0, const void *key1);
-};
+} hashmap;
 
 /*
 	Creates an empty hashmap with specified initial capacity and loadfactor, using default hash function and comparator.
@@ -49,43 +52,43 @@ struct HashMap {
 	It is up to the programmer to specify a function that returns a boolean which compares keys.
 */
 
-struct HashMap create_HashMap(size_t initial_capacity, float lf);
+hashmap create_HashMap(size_t initial_capacity, float lf);
 
 /*
 	Puts a specified key-value pair into the hashmap, returns the associated value if the key already exists, null otherwise.
 */
 
-void* hm_put(struct HashMap *map, void *key, void *value);
+void* hm_put(hashmap *map, void *key, void *value);
 
 /*
 	Removes the MapEntry with specified key, returns the value formerly stored there, null if key does not exist.
 */
 
-void* hm_remove(struct HashMap *map, void *key);
+void* hm_remove(hashmap *map, void *key);
 
 /*
 	Returns the value associated with a specified key, NULL if the hashmap does not contain the key.
 */
 
-void* hm_get(struct HashMap *map, void *key);
+void* hm_get(hashmap *map, void *key);
 
 /*
 	Returns true if a specified key is contained in the hashmap, false otherwise.
 */
 
-bool hm_containsKey(struct HashMap *map, void *key);
+bool hm_containsKey(hashmap *map, void *key);
 
 /*
 	Returns an ArrayList of all keys stored in the hashmap
 */
 
-struct ArrayList keySet(struct HashMap *map);
+struct arraylist *keySet(hashmap *map);
 
 /*
 	Returns an ArrayList of all values stored in the HashMap
 */
 
-struct ArrayList values(struct HashMap *map);
+struct arraylist *values(hashmap *map);
 
 /*
 	Computes the hash of input "key" using the multiplicative hashing formula: h(K) = floor(aK mod W / (W/M)),
@@ -105,12 +108,12 @@ bool default_comparator(const void *key0, const void *key1);
 	Calls free() only on the hashmap entries. Sets every entry in the backing array to null.
 */
 
-void hm_clear(struct HashMap *map);
+void hm_clear(hashmap *map);
 
 /*
 	Calls free() on every key, value, and hashmap entry. Sets every entry in the backing array to null.
 */
 
-void hm_delete(struct HashMap *map);
+void hm_delete(hashmap *map);
 
 #endif

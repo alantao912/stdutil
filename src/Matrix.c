@@ -1,12 +1,8 @@
 #include "Matrix.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
 
-struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
-	struct fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
-	matrix.elements = (float*) calloc(num_rows * num_cols, sizeof(float));
+fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
+	fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
+	matrix.elements = (float *) malloc(num_rows * num_cols * sizeof(float));
 	if (matrix.elements != NULL) {
 		matrix.rows = num_rows;
 		matrix.cols = num_cols;
@@ -23,11 +19,11 @@ struct fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
 	return matrix;
 }
 
-float fMatrix_get(struct fMatrix* mat, size_t row, size_t col) {
+float fMatrix_get(fMatrix *mat, size_t row, size_t col) {
 	return mat->elements[row * mat->rows + col];
 }
 
-bool fMatrix_set(struct fMatrix* mat, size_t row, size_t col, float data) {
+bool fMatrix_set(fMatrix *mat, size_t row, size_t col, float data) {
 	if (row < mat->rows && col < mat->cols) {
 		mat->elements[row * mat->cols + col] = data;
 		return true;
@@ -36,8 +32,8 @@ bool fMatrix_set(struct fMatrix* mat, size_t row, size_t col, float data) {
 	}
 }
 
-struct fMatrix fMatrix_multiply(struct fMatrix lmat, struct fMatrix rmat) {
-	struct fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
+fMatrix fMatrix_multiply(fMatrix lmat, fMatrix rmat) {
+	fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
 	if (lmat.cols == rmat.rows) {
 		matrix.elements = malloc(lmat.rows * rmat.cols * sizeof(float));
 		if (matrix.elements == NULL) {
@@ -59,8 +55,8 @@ struct fMatrix fMatrix_multiply(struct fMatrix lmat, struct fMatrix rmat) {
 	return matrix;
 }
 
-struct fMatrix fMatrix_add(struct fMatrix lmat, struct fMatrix rmat) {
-	struct fMatrix sum = {.elements = NULL, .rows = -1, .cols = -1};
+fMatrix fMatrix_add(fMatrix lmat, fMatrix rmat) {
+	fMatrix sum = {.elements = NULL, .rows = -1, .cols = -1};
 	if (lmat.cols == rmat.cols && lmat.rows == rmat.rows) {
 		sum.elements = calloc(lmat.rows * lmat.cols, sizeof(float));
 		if (sum.elements == NULL) {
@@ -75,8 +71,8 @@ struct fMatrix fMatrix_add(struct fMatrix lmat, struct fMatrix rmat) {
 	return sum;
 }
 
-static struct fMatrix* createSubMatrix(struct fMatrix* parent, size_t row, size_t col) {
-	struct fMatrix* subMatrix = (struct fMatrix*) malloc(sizeof(struct fMatrix));
+static fMatrix *createSubMatrix(fMatrix *parent, size_t row, size_t col) {
+	fMatrix *subMatrix = (fMatrix*) malloc(sizeof(fMatrix));
 	subMatrix->rows = parent->rows - 1;
 	subMatrix->cols = parent->cols - 1;
 	subMatrix->elements = (float*) malloc(subMatrix->rows * subMatrix->cols * sizeof(float));
@@ -103,7 +99,7 @@ static struct fMatrix* createSubMatrix(struct fMatrix* parent, size_t row, size_
 	return subMatrix;
 }
 
-float fMatrix_determinant(struct fMatrix* mat) {
+float fMatrix_determinant(fMatrix *mat) {
 	if (mat->rows != mat->cols) {
 		return 0.0f;
 	}
@@ -113,7 +109,7 @@ float fMatrix_determinant(struct fMatrix* mat) {
 	bool isNegative = false;
 	float determinant = 0.0f;
 	for (size_t i = 0; i < mat->cols; ++i) {
-		struct fMatrix* subMatrix = createSubMatrix(mat, 0, i);
+		fMatrix *subMatrix = createSubMatrix(mat, 0, i);
 		float term = fMatrix_get(mat, 0, i) * fMatrix_determinant(subMatrix);
 		free(subMatrix);
 
@@ -127,13 +123,13 @@ float fMatrix_determinant(struct fMatrix* mat) {
 	return determinant;
 }
 
-void fMatrix_scale(struct fMatrix* mat, float scalar) {
+void fMatrix_scale(fMatrix *mat, float scalar) {
 	for (size_t i = 0; i < mat->cols * mat->rows; ++i) {
 		mat->elements[i] *= scalar;
 	}
 }
 
-void fMatrix_print(struct fMatrix* mat) {
+void fMatrix_print(fMatrix *mat) {
 	char useless_buffer[16];
 	signed char max_length[mat->cols];
 
