@@ -1,9 +1,4 @@
 #include "set.h"
-#include <math.h>
-#include <stdlib.h>
-#include "hashmap.h"
-
-#include <stdio.h>
 
 static bool resize(struct set *set) {
 	size_t new_capacity = 2 * set->capacity + 1;

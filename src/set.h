@@ -3,6 +3,9 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <math.h>
+#include <stdlib.h>
+#include "hashmap.h"
 
 struct SetEntry {
 	void *data;
