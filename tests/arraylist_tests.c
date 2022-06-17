@@ -3,7 +3,7 @@
 jmp_buf break_point;
 
 bool test_create_arraylist() {
-    printf("Test: \"create_arraylist('int')\" starting ... \n");
+    printf("Test: \"create_arraylist('size_t')\" starting ...");
 
     int assert_code;
 
@@ -19,7 +19,7 @@ bool test_create_arraylist() {
             printf("list->elements == NULL when \"create_arraylist('int')\" returns.\n");
             break;
         }
-        printf("Test: create_arraylist('int') \x1b[31m failed!\x1b[0m\n\n");
+        printf("\x1b[31m failed!\x1b[0m\n\n");
         return false;
     } else {
         arraylist *list = create_arraylist(0);
@@ -36,13 +36,13 @@ bool test_create_arraylist() {
         free(list->elements);
         free(list);
 
-        printf("Test: \"create_arraylist('int')\" \x1b[32m passed!\x1b[0m\n\n");
+        printf("\x1b[32m passed!\x1b[0m\n\n");
         return true;
     }
 }
 
 bool test_create_arraylist_OOM() {
-    printf("Test: \"create_arraylist(UINT_MAX)\" starting ... \n");
+    printf("Test: \"create_arraylist(UINT_MAX)\" starting ...");
     
     int assert_code;
 
@@ -52,20 +52,20 @@ bool test_create_arraylist_OOM() {
             printf("list != NULL when \"create_arraylist(UINT_MAX)\" returns.\n");
             break;
         }
-         printf("Test: \"create_arraylist(UINT_MAX)\" \x1b[31m failed!\x1b[0m\n\n");
+         printf("\x1b[31m failed!\x1b[0m\n\n");
          return false;
     } else {
         
         arraylist *list = create_arraylist(SIZE_T_MAX);
         
         int_assert_equal((int) list, 0, 1);
-        printf("Test: \"create_arraylist(UINT_MAX)\" \x1b[32m passed!\x1b[0m\n\n");  
+        printf("\x1b[32m passed!\x1b[0m\n\n");  
         return true;  
     }
 }
 
 bool test_al_add() {
-    printf("Test: \"al_add('arraylist *', 'void *')\" starting ... \n");
+    printf("Test: \"al_add('arraylist *', 'void *')\" starting ...");
     
     int assert_code;
 
@@ -88,7 +88,7 @@ bool test_al_add() {
             
             break;
         }
-        printf("Test: \"al_add('arraylist *', 'void *')\" \x1b[31m failed!\x1b[0m\n\n");
+        printf("\x1b[31m failed!\x1b[0m\n\n");
         return false;
     } else {
         arraylist *list = create_arraylist(10);
@@ -116,13 +116,13 @@ bool test_al_add() {
         al_delete(list);
         free(list);
         
-        printf("Test: \"al_add('arraylist *', 'void *')\" \x1b[32m passed!\x1b[0m\n\n");
+        printf("\x1b[32m passed!\x1b[0m\n\n");
         return true; 
     }
 }
 
 bool test_al_addAt() {
-    printf("Test: \"al_addAt('arraylist *', 'size_t' ,'void *')\" starting ... \n");
+    printf("Test: \"al_addAt('arraylist *', 'size_t' ,'void *')\" starting ...");
 
     int assert_code;
 
@@ -142,7 +142,7 @@ bool test_al_addAt() {
         break;
 
         }
-        printf("Test: \"al_addAt('arraylist *', 'size_t' ,'void *')\" \x1b[31m failed!\x1b[0m\n\n");
+        printf("\x1b[31m failed!\x1b[0m\n\n");
         return false;
     } else {
         arraylist *list = create_arraylist(6);
@@ -179,7 +179,7 @@ bool test_al_addAt() {
         int_assert_equal(list->capacity, 12, 4);
         int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
 
-        printf("Test: \"al_addAt('arraylist *', 'size_t' ,'void *')\" \x1b[32m passed!\x1b[0m\n\n");
+        printf("\x1b[32m passed!\x1b[0m\n\n");
         return true;
     }
 }

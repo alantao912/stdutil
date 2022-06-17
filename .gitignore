@@ -4,3 +4,4 @@
 Test.c
 *.bmp
 .vscode
+*.out
