@@ -1,7 +1,6 @@
 #ifndef STDUTIL_ASSERT_H
 #define STDUTIL_ASSERT_H
 
-#include <stdio.h>
 #include <stdbool.h>
 #include <setjmp.h>
 

@@ -8,6 +8,7 @@ bool test_create_arraylist() {
     int assert_code;
 
     if ((assert_code = setjmp(break_point))) {
+        printf("\x1b[31m failed!\x1b[0m\n\n");
         switch (assert_code) {
             case 1:
             printf("list->capacity != DEFAULT_CAPACITY when initial_capacity == 0.\n");
@@ -19,7 +20,7 @@ bool test_create_arraylist() {
             printf("list->elements == NULL when \"create_arraylist('int')\" returns.\n");
             break;
         }
-        printf("\x1b[31m failed!\x1b[0m\n\n");
+        printf("\n");
         return false;
     } else {
         arraylist *list = create_arraylist(0);
@@ -42,17 +43,18 @@ bool test_create_arraylist() {
 }
 
 bool test_create_arraylist_OOM() {
-    printf("Test: \"create_arraylist(UINT_MAX)\" starting ...");
+    printf("Test: \"create_arraylist(ULLONG_MAX)\" starting ...");
     
     int assert_code;
 
     if ((assert_code = setjmp(break_point))) {
+        printf("\x1b[31m failed!\x1b[0m\n\n");
         switch (assert_code) {
             case 1:
-            printf("list != NULL when \"create_arraylist(UINT_MAX)\" returns.\n");
+            printf("list != NULL when \"create_arraylist(ULLONG_MAX)\" returns.\n");
             break;
         }
-         printf("\x1b[31m failed!\x1b[0m\n\n");
+        printf("\n");
          return false;
     } else {
         
@@ -70,25 +72,26 @@ bool test_al_add() {
     int assert_code;
 
     if ((assert_code = setjmp(break_point))) {
-        switch (assert_code) {
-            case 1:
-            printf("list values not correctly populated by \"al_add('arraylist *', 'void *')\".\n");
-            break;
-            case 2:
-            printf("list->size not correctly updated by \"al_add('arraylist *', 'void *')\"\n");
-            break;
-            case 3:
-            printf("list->capacity should not have changed when only adding 3 values.\n");
-            break;
-            case 4:
-            printf("list->elements did not resize properly when more than list->capacity elements were added.\n");
-            break;
-            case 5:
-            printf("\"al_add('arraylist *','void *')\" does not maintain correct order of elements.\n");
-            
-            break;
-        }
         printf("\x1b[31m failed!\x1b[0m\n\n");
+        switch (assert_code) {
+                case 1:
+                printf("list values not correctly populated by \"al_add('arraylist *', 'void *')\".\n");
+                break;
+                case 2:
+                printf("list->size not correctly updated by \"al_add('arraylist *', 'void *')\"\n");
+                break;
+                case 3:
+                printf("list->capacity should not have changed when only adding 3 values.\n");
+                break;
+                case 4:
+                printf("list->elements did not resize properly when more than list->capacity elements were added.\n");
+                break;
+                case 5:
+                printf("\"al_add('arraylist *','void *')\" does not maintain correct order of elements.\n");
+                
+                break;
+        }
+        printf("\n");
         return false;
     } else {
         arraylist *list = create_arraylist(10);
@@ -127,22 +130,25 @@ bool test_al_addAt() {
     int assert_code;
 
     if ((assert_code = setjmp(break_point))) {
-        switch (assert_code) {
-        case 1:
-            printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not maintain correct order of elements.\n");
-        break;
-        case 2:
-            printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not increase array size.\n");
-        break;
-        case 3:
-            printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" return incorrect status code.\n");
-        break;
-        case 4:
-            printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not correctly resize backing array.\n");
-        break;
-
-        }
         printf("\x1b[31m failed!\x1b[0m\n\n");
+        switch (assert_code) {
+            case 1:
+                printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not maintain correct order of elements.\n");
+            break;
+            case 2:
+                printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not increase array size.\n");
+            break;
+            case 3:
+                printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" return incorrect status code.\n");
+            break;
+            case 4:
+                printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not correctly resize backing array.\n");
+            break;
+            case 5:
+                printf("\"al_addAt('arraylist *', 'size_t' ,'void *')\" does not return false when argument 'size_t' out of range.\n");
+            break;
+        }
+        printf("\n");
         return false;
     } else {
         arraylist *list = create_arraylist(6);
@@ -179,14 +185,105 @@ bool test_al_addAt() {
         int_assert_equal(list->capacity, 12, 4);
         int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
 
+        status = al_addAt(list, 999, Integer(10));
+        bool_assert_equal(status, false, 5);
+
         printf("\x1b[32m passed!\x1b[0m\n\n");
         return true;
     }
 }
 
-bool test_al_set();
+bool test_al_set() {
+    printf("Test: \"al_set('arraylist *', 'size_t' ,'void *')\" starting ...");
 
-bool test_ensure_capacity();
+    int assert_code;
+
+    if ((assert_code = setjmp(break_point))) {
+
+        printf("\x1b[31m failed!\x1b[0m\n");
+        switch (assert_code) {
+            case 2:
+                printf("\"al_set('arraylist *', 'size_t' ,'void *')\" changes size.\n");
+            break;
+            case 1:
+                printf("\"al_set('arraylist *', 'size_t' ,'void *')\" does not preserve correct order.\n");
+            break;
+        
+        }
+        printf("\n");
+        return false;
+    } else {
+        arraylist *list = create_arraylist(6);
+        al_add(list, Integer(3));
+        al_add(list, Integer(4));
+        al_add(list, Integer(5));
+
+        al_set(list, 1, Integer(6));
+        
+        int correct_values[] = {3, 6, 5};
+        int_assert_equal(list->size, 3, 2);
+        int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
+
+        printf("\x1b[32m passed!\x1b[0m\n\n");
+        return true;
+    }
+}
+
+bool test_ensure_capacity() {
+    printf("Test: \"al_ensure_capacity('arraylist *', 'size_t')\" starting ...");
+
+    int assert_code;
+
+    if ((assert_code = setjmp(break_point))) {
+
+        printf("\x1b[31m failed!\x1b[0m\n");
+        switch (assert_code) {
+            printf("al_ensure_capacity('arraylist *', 'size_t') ");
+            case 1:
+                printf("starting capacity is incorrect.\n");
+            break;
+            case 2:
+                printf("starting size is incorrect.\n");
+            break;
+            case 3:
+                printf("should fail when new_capacity < list->size.\n");
+            break;
+            case 4:
+                printf("should return false when OOM occurs.\n");
+            break;
+            case 5:
+                printf("should return true when successfully resizes.\n");
+            break;
+            case 6:
+                printf("should preserve size when resizing.\n");
+            break;
+        
+        }
+        printf("\n");
+        return false;
+    } else {
+        arraylist *list = create_arraylist(6);
+
+        al_add(list, Integer(1));
+        al_add(list, Integer(1));
+
+        int_assert_equal(list->capacity, 6, 1);
+        int_assert_equal(list->size, 2, 2);
+
+        bool status = al_ensure_capacity(list, 1);
+        bool_assert_equal(status, false, 3);
+
+        status = al_ensure_capacity(list, ULLONG_MAX);
+        bool_assert_equal(status, false, 4);
+
+        status = al_ensure_capacity(list, 3);
+        bool_assert_equal(status, true, 5);
+        int_assert_equal(list->size, 2, 6);
+
+        printf("\x1b[32m passed!\x1b[0m\n\n");
+        return true;
+    }
+}
 
 bool test_al_get();
 
