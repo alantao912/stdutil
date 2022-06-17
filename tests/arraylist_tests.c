@@ -26,14 +26,14 @@ bool test_create_arraylist() {
         arraylist *list = create_arraylist(0);
         int_assert_equal(list->capacity, 10, 1);
         int_assert_equal(list->size, 0, 2);
-        int_assert_nequal((int) list->elements, 0, 3);
+        int_assert_nequal((long) list->elements, 0, 3);
         free(list->elements);
         free(list);
 
         list = create_arraylist(5);
         int_assert_equal(list->capacity, 5, 4);
         int_assert_equal(list->size, 0, 2);
-        int_assert_nequal((int) list->elements, 0, 3);
+        int_assert_nequal((long) list->elements, 0, 3);
         free(list->elements);
         free(list);
 
@@ -60,7 +60,7 @@ bool test_create_arraylist_OOM() {
         
         arraylist *list = create_arraylist(ULLONG_MAX);
         
-        int_assert_equal((int) list, 0, 1);
+        int_assert_equal((long) list, 0, 1);
         printf("\x1b[32m passed!\x1b[0m\n\n");  
         return true;  
     }

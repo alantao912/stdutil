@@ -67,6 +67,7 @@ priority_queue *heapify(void **data, size_t size) {
 	for (size_t i = pq->size / 2; i > 0; --i) {
 		downheap(pq, i);
 	}
+	return pq;
 }
 
 static void upheap(priority_queue *pq, size_t index) {

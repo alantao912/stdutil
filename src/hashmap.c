@@ -13,7 +13,8 @@ static void resize(hashmap *map) {
 			} else {
 				size_t index = map->hash_function(map->table[i]->key) % new_capacity;
 				while (new_table[index]) {
-					index = ++index % new_capacity;
+					++index;
+					index = index % new_capacity;
 				}
 				new_table[index] = map->table[i];
 				++j;
@@ -89,7 +90,8 @@ void* hm_put(hashmap *map, void *key, void *value) {
 			++j;
 		}
 		++i;
-		index = ++index % map->capacity;
+		++index;
+		index = index % map->capacity;
 	}
 	return NULL;
 }
@@ -111,7 +113,8 @@ void* hm_remove(hashmap *map, void *key) {
 			++j;
 		}
 		++i;
-		index = ++index % map->capacity;
+		++index;
+		index = index % map->capacity;
 	}
 	return NULL;	
 }
@@ -131,7 +134,8 @@ void* hm_get(hashmap *map, void *key) {
 			++j;
 		}
 		++i;
-		index = ++index % map->capacity;
+		++index;
+		index = index % map->capacity;
 	}
 	return NULL;
 }
@@ -169,7 +173,7 @@ arraylist *values(hashmap *map) {
 static const unsigned int a = 48339, W = 97, M = UINT_MAX;
 
 size_t default_hash_function(const void *key) {
-	unsigned int hash = (unsigned int) key;
+	unsigned long hash = (unsigned long) key;
 	return (size_t) floor(((a * hash) % W) * (M / W));
 }
 

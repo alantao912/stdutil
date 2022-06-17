@@ -55,7 +55,7 @@ static treenode *findSuccessor(treenode *node) {
 	return iterator;
 }
 
-static treenode *addHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static treenode *addHelper(treenode *node, void *data, const signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		treenode *child = (treenode*) malloc(sizeof(treenode));
 		child->left = NULL;
@@ -92,7 +92,7 @@ static treenode *addHelper(treenode *node, void *data, signed char (*comparator)
 	return node;
 }
 
-static treenode *removeHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static treenode *removeHelper(treenode *node, void *data, const signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}
@@ -133,7 +133,7 @@ static treenode *removeHelper(treenode *node, void *data, signed char (*comparat
 	return node;
 }
 
-static void *getHelper(treenode *node, void *data, signed char (*comparator)(const void *loperand, const void *roperand)) {
+static void *getHelper(treenode *node, void *data, const signed char (*comparator)(const void *loperand, const void *roperand)) {
 	if (!node) {
 		return NULL;
 	}

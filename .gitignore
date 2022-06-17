@@ -5,3 +5,6 @@ Test.c
 *.bmp
 .vscode
 *.out
+a
+run_tests
+objdump/

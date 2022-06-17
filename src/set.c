@@ -21,7 +21,8 @@ static bool resize(struct set *set) {
 			} else {
 				size_t index = set->hash_function(set->data[i].data) % new_capacity;
 				while (new_array[index].data) {
-					index = ++index % new_capacity;
+					++index;
+					index = index % new_capacity;
 				}
 				new_array[index].data = set->data[i].data;
 				++j;
@@ -104,7 +105,8 @@ bool set_add(struct set *set, void *element) {
 			++j;
 		}
 		++i;
-		index = ++index % set->capacity;
+		++index;
+		index = index % set->capacity;
 	}
 	return false;
 }
@@ -131,7 +133,8 @@ void *set_remove(struct set *set, void *element) {
 			++j;
 		}
 		++i;
-		index = ++index % set->capacity;
+		++index;
+		index = index % set->capacity;
 	}
 	return NULL;
 }
@@ -152,7 +155,8 @@ bool set_contains(struct set *set, void *element) {
 			++j;
 		}
 		++i;
-		index = ++index % set->capacity;
+		++index;
+		index = index % set->capacity;
 	}
 	return false;
 }

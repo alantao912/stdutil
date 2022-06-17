@@ -17,7 +17,7 @@ static bool resize(stack *target, size_t new_capacity) {
 }
 
 stack *create_stack(size_t initial_capacity) {
-	if (initial_capacity = DEFAULT_CAPACITY) {
+	if (initial_capacity == 0) {
 		initial_capacity = DEFAULT_CAPACITY;
 	}
 	stack *s = (stack *) malloc(sizeof(stack));

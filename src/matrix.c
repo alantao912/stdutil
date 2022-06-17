@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "matrix.h"
 
 fMatrix create_fMatrix(size_t num_rows, size_t num_cols) {
 	fMatrix matrix = {.elements = NULL, .rows = -1, .cols = -1};
