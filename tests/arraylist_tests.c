@@ -285,7 +285,45 @@ bool test_ensure_capacity() {
     }
 }
 
-bool test_al_get();
+bool test_al_get() {
+    printf("Test: \"al_get('arraylist *', 'size_t')\" starting ...");
+
+    int assert_code;
+
+    if ((assert_code = setjmp(break_point))) {
+
+        printf("\x1b[31m failed!\x1b[0m\n");
+        switch (assert_code) {
+            case 1:
+            printf("does not return correct value\n");
+            break;    
+            case 2:
+            printf("index out of bounds should return null\n.");
+            break;
+        
+        }
+        printf("\n");
+        return false;
+    } else {
+        arraylist *list = create_arraylist(6);
+
+        al_add(list, Integer(1));
+        al_add(list, Integer(2));
+        
+        int *i = (int *) al_get(list, 1);
+        int_assert_equal(*i, 2, 1);
+
+        i = (int *) al_get(list, 0);
+        int_assert_equal(*i, 1, 1);
+
+        i = (int *) al_get(list, 2);
+        int_assert_equal((long) i, 0, 2);
+        
+
+        printf("\x1b[32m passed!\x1b[0m\n\n");
+        return true;
+    }
+}
 
 bool test_remove();
 

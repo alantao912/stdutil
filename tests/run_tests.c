@@ -8,5 +8,6 @@ int main(int argc, char *argv[]) {
     test_al_addAt();
     test_al_set();
     test_ensure_capacity();
+    test_al_get();
     return 0;
 }

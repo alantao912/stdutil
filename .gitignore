@@ -8,3 +8,4 @@ Test.c
 a
 run_tests
 objdump/
+!stdutil.a
