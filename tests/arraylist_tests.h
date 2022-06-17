@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include "assert.h"
 #include "limits.h"
-#include "../src/ArrayList.h"
+#include "../src/arraylist.h"
 #include "../src/primitives.h"
 
 bool test_create_arraylist();
