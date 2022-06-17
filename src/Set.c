@@ -1,7 +1,7 @@
-#include "Set.h"
+#include "set.h"
 #include <math.h>
 #include <stdlib.h>
-#include "HashMap.h"
+#include "hashmap.h"
 
 #include <stdio.h>
 

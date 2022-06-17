@@ -1,5 +1,5 @@
-a: test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o Set.o priority_queue.o
-	gcc test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o Set.o priority_queue.o -o a
+a: test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o
+	gcc test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o -o a
 
 test.o: test.c
 	gcc -c test.c
@@ -31,8 +31,8 @@ queue.o: queue.c queue.h
 hashmap.o: hashmap.c hashmap.h
 	gcc -c hashmap.c
 
-Set.o: Set.c Set.h
-	gcc -c Set.c
+set.o: set.c set.h
+	gcc -c set.c
 
 priority_queue.o: priority_queue.c priority_queue.h
 	gcc -c priority_queue.c
