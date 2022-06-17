@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include "arraylist_tests.h"
 
 int main(int argc, char *argv[]) {
-    printf("Running tests!\n");
+    test_create_arraylist();
+    test_create_arraylist_OOM();
     return 0;
 }
