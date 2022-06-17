@@ -2,37 +2,39 @@
 #define UTIL_QUEUE_H
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
-struct Queue {
-	void** data;
+typedef struct queue {
+	void **data;
 	size_t front, size, capacity;
-};
+} queue;
 
-struct Queue create_Queue(size_t initialCapacity);
+queue *create_queue(size_t initialCapacity);
 
 /*
 	Adds an element to the back of the queue.
 */
 
-void enqueue(struct Queue *target, void *element);
+void enqueue(queue *target, void *element);
 
 /*
 	Removes an element from the front of the queue.
 */
 
-void* dequeue(struct Queue *target);
+void* dequeue(queue *target);
 
 /*
 	Removes all data from queue.
 
 */
 
-void q_clear(struct Queue *target);
+void q_clear(queue *target);
 
 /*
 	Removes and frees all data from queue.
 */
 
-void q_delete(struct Queue *target);
+void q_delete(queue *target);
 
 #endif

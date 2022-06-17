@@ -270,23 +270,23 @@ arraylist *postorder(struct tree *tree) {
 }
 
 arraylist *levelorder(struct tree *tree) {
-	struct Queue node_queue = create_Queue(8);
+	queue *node_queue = create_queue(8);
 	arraylist *data = create_arraylist(tree->size);
 
-	enqueue(&node_queue, tree->root);
+	enqueue(node_queue, tree->root);
 	
-	while (node_queue.size > 0) {
-		treenode *current = (treenode*) dequeue(&node_queue);
+	while (node_queue->size > 0) {
+		treenode *current = (treenode *) dequeue(node_queue);
 		al_add(data, current->data);
 		
 		if (current->left) {
-			enqueue(&node_queue, current->left);
+			enqueue(node_queue, current->left);
 		}
 
 		if (current->right) {
-			enqueue(&node_queue, current->right);			
+			enqueue(node_queue, current->right);			
 		}
 	}
-	free(node_queue.data);
+	q_clear(node_queue);
 	return data;
 }

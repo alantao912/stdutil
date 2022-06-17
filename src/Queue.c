@@ -1,23 +1,31 @@
-#include "Queue.h"
-#include <stdlib.h>
+#include "queue.h"
 
-struct Queue create_Queue(size_t initialCapacity) {
-	struct Queue queue = {.data = NULL, .front = 0, .size = 0, .capacity = initialCapacity};
-	queue.data = (void**) calloc(queue.capacity, sizeof(void*));
-	for (int i = 0; i < queue.capacity; ++i) {
-		queue.data[i] = NULL;
+queue *create_queue(size_t initialCapacity) {
+	queue *q = (queue *) malloc(sizeof(queue));
+	if (!q) {
+		return NULL;
 	}
-	return queue;
+	q->data = (void **) malloc(initialCapacity * sizeof(void *));
+	if (!q->data) {
+		free(q);
+		return NULL;
+	}
+	memset(q->data, 0, initialCapacity * sizeof(void *));
+	q->capacity = initialCapacity;
+	q->size = 0;
+	q->front = 0;
+	return q;
 }
 
-void enqueue(struct Queue* target, void* element) {
+void enqueue(queue *target, void *element) {
 	if (target->size < target->capacity) {
 		target->data[(target->front + target->size) % target->capacity] = element;
 	} else {
-		void** new = (void**) calloc(target->capacity * 2 ,sizeof(void*));
+		void **new = (void **) malloc(2 * target->capacity * sizeof(void *));
 		size_t i;
-		for(i = 0; i < target->size; ++i)
+		for (i = 0; i < target->size; ++i) {
 			new[i] = target->data[(target->front + i) % target->capacity];
+		}
 		new[i] = element;
 		free(target->data);
 		target->data = new;
@@ -27,8 +35,8 @@ void enqueue(struct Queue* target, void* element) {
 	++target->size;
 }
 
-void* dequeue(struct Queue* target) {
-	void* ret = NULL;
+void *dequeue(queue *target) {
+	void *ret = NULL;
 	if (target->size > 0) {
 		ret = target->data[target->front];
 		target->data[target->front] = NULL;
@@ -38,7 +46,7 @@ void* dequeue(struct Queue* target) {
 	return ret;
 }
 
-void q_clear(struct Queue *target) {
+void q_clear(queue *target) {
 	for (size_t i = 0; i < target->size; ++i) {
 		target->data[(i + target->front) % target->capacity] = NULL;
 	}
@@ -46,7 +54,7 @@ void q_clear(struct Queue *target) {
 	target->size = 0;
 }
 
-void q_delete(struct Queue *target) {
+void q_delete(queue *target) {
 	for (size_t i = 0; i < target->size; ++i) {
 		free(target->data[(i + target->front) % target->capacity]);
 		target->data[(i + target->front) % target->capacity] = NULL;
