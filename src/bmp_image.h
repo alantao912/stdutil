@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
-#include "Matrix.h"
+#include "matrix.h"
 
 typedef struct pixel {
 	unsigned char R, G, B, A;

@@ -220,7 +220,7 @@ bmp_image convolution(bmp_image* image, struct fMatrix* kernel) {
 			}
 			unsigned char *dest_pixel = (unsigned char*) getPixelAt(&convolved_image, col, row);
 			for (int i = 0; i < bpp / 8; ++i) {
-				dest_pixel[i] = (unsigned char) ((int) round(abs(accumulator[i])) % 255);
+				dest_pixel[i] = (unsigned char) ((int) round(fabsf(accumulator[i])) % 255);
 			}
 
 		}

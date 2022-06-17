@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "avl_tree.h"
-#include "Queue.h"
+#include "queue.h"
 
 static void update(treenode *node) {
 	int leftHeight = -1;

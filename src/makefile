@@ -1,6 +1,9 @@
 a: test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o
 	gcc test.o arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o -o a
 
+libstdutil.a: arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o
+	ar rcs libstdutil.a arraylist.o primitives.o stack.o linked_list.o avl_tree.o matrix.o bmp_image.o queue.o hashmap.o set.o priority_queue.o
+
 test.o: test.c
 	gcc -c test.c
 
