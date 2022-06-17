@@ -56,7 +56,7 @@ bool test_create_arraylist_OOM() {
          return false;
     } else {
         
-        arraylist *list = create_arraylist(SIZE_T_MAX);
+        arraylist *list = create_arraylist(ULLONG_MAX);
         
         int_assert_equal((int) list, 0, 1);
         printf("\x1b[32m passed!\x1b[0m\n\n");  
