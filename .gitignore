@@ -1,7 +1,6 @@
 *.exe
 *.a
 *.o
-Test.c
 *.bmp
 .vscode
 *.out
@@ -9,3 +8,4 @@ a
 run_tests
 objdump/
 !stdutil.a
+!stdutil_win.a
