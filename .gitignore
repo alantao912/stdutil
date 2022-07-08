@@ -7,5 +7,3 @@
 a
 run_tests
 objdump/
-!stdutil.a
-!stdutil_win.a

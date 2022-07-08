@@ -325,6 +325,54 @@ bool test_al_get() {
     }
 }
 
-bool test_remove();
+bool test_remove() {
+    printf("Test: \"al_remove('arraylist *', 'size_t')\" starting ...");
 
-bool test_sort();
+    int assert_code;
+
+    if ((assert_code = setjmp(break_point))) {
+
+        printf("\x1b[31m failed!\x1b[0m\n");
+        switch (assert_code) {
+            case 1:
+                printf("size should be reduced by 1 when removing.\n");
+            break;
+            case 2:
+                printf("capacity should not change when removing.\n");
+            break;
+            case 3:
+                printf("does not retrieve correct value.\n");
+            break;
+            case 4:
+                printf("does not maintain order of remaining elements.\n");
+            break;
+        
+        }
+        printf("\n");
+        return false;
+    } else {
+        arraylist *list = create_arraylist(6);
+        al_add(list, Integer(3));
+        al_add(list, Integer(4));
+        al_add(list, Integer(5));
+        int *i = (void *) al_remove(list, 2);
+
+        int_assert_equal(list->size, 2, 1);
+        int_assert_equal(list->capacity, 6, 2);
+        int_assert_equal(*i, 5, 3);
+
+        int correct_values[2] = {3, 4};
+
+        int_array_assert_equal((int **) list->elements, correct_values, list->size, 4);
+        i = (void *) al_remove(list, 0);
+        int_assert_equal(*i, 3, 3);
+        correct_values[0] = 4;
+        int_array_assert_equal((int **) list->elements, correct_values, list->size, 4);
+        printf("\x1b[32m passed!\x1b[0m\n\n");
+        return true;
+    }
+}
+
+bool test_sort() {
+    return false;
+}

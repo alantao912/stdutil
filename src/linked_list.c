@@ -51,9 +51,9 @@ void ll_addAt(linked_list *target, size_t position, void *element) {
 	list_node *node = (list_node*) malloc(sizeof(list_node));
 	node->element = element;
 	node->next = *iterator;
-	
+
 	*iterator = node;
-	
+
 	if (position == 0) {
 		target->head = node;
 	} else if (position == target->size) {
@@ -114,7 +114,7 @@ void *ll_remove(linked_list *target, size_t position) {
 	if (position >= target->size) {
 		return NULL;
 	}
-	
+
 	list_node **iterator = &(target->head), *prev = NULL;
 	for (size_t i = 0; i < position; ++i) {
 		prev = *iterator;
@@ -124,7 +124,7 @@ void *ll_remove(linked_list *target, size_t position) {
 	if (position == target->size - 1) {
 		target->tail = prev;
 	}
-	
+
 	if (*iterator == target->iterator) {
 		target->iterator = prev;
 	}
@@ -163,7 +163,7 @@ void ll_delete(linked_list *target) {
 	target->size = 0;
 }
 
-void join(linked_list* left_list, linked_list* right_list) {	
+void join(linked_list* left_list, linked_list* right_list) {
 	if (left_list->size != 0 && right_list->size != 0) {
 		left_list->tail->next = right_list->head;
 		left_list->tail = right_list->tail;
@@ -181,7 +181,7 @@ linked_list *split(linked_list* target, size_t split) {
 		return new;
 	}
 	list_node *iterator = target->head, *prev = NULL;
-	
+
 	for (size_t i = 0; i < split; ++i) {
 		prev = iterator;
 		iterator = iterator->next;

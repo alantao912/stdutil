@@ -9,5 +9,6 @@ int main(int argc, char *argv[]) {
     test_al_set();
     test_ensure_capacity();
     test_al_get();
+    test_remove();
     return 0;
 }

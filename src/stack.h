@@ -1,8 +1,8 @@
 #ifndef UTIL_STACK_H
 #define UTIL_STACK_H
 
-#include <stdbool.h>
 #include <string.h>
+#include <stdbool.h>
 #include "arraylist.h"
 
 typedef struct stack {
