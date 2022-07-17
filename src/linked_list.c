@@ -2,10 +2,18 @@
 
 linked_list *array_to_linkedlist(void **array, size_t size) {
 	linked_list *linked_list = create_linkedlist();
+	if (!linked_list) {
+		return NULL;
+	}
 
 	list_node **iterator = &(linked_list->head);
 	for (size_t i = 0; i < size; ++i) {
 		*iterator = (list_node*) malloc(sizeof(list_node));
+		if (!iterator) {
+			ll_clear(linked_list);
+			free(linked_list);
+			return NULL;
+		}
 		linked_list->tail = *iterator;
 		(*iterator)->element = array[i];
 		iterator = &((*iterator)->next);
@@ -22,7 +30,7 @@ linked_list *create_linkedlist() {
 	return ll;
 }
 
-void add_first(linked_list *target, void *element) {
+void ll_add_first(linked_list *target, void *element) {
 	list_node *node = (list_node*) malloc(sizeof(list_node));
 	node->element = element;
 	node->next = target->head;
@@ -30,7 +38,7 @@ void add_first(linked_list *target, void *element) {
 	++target->size;
 }
 
-void add_last(linked_list *target, void *element) {
+void ll_add_last(linked_list *target, void *element) {
 	list_node *node = (list_node*) malloc(sizeof(list_node));
 	node->element = element;
 	node->next = NULL;
@@ -134,6 +142,31 @@ void *ll_remove(linked_list *target, size_t position) {
 	free(toRemove);
 	--target->size;
 	return data;
+}
+
+list_node *ll_remove_node(linked_list *target, size_t position) {
+	if (position >= target->size) {
+		return NULL;
+	}
+
+	list_node **iterator = &(target->head), *prev = NULL;
+	for (size_t i = 0; i < position; ++i) {
+		prev = *iterator;
+		iterator = &((*iterator)->next);
+	}
+
+	if (position == target->size - 1) {
+		target->tail = prev;
+	}
+
+	if (*iterator == target->iterator) {
+		target->iterator = prev;
+	}
+	list_node *to_remove = *iterator;
+	*iterator = to_remove->next;
+	to_remove->next = NULL;
+	--target->size;
+	return to_remove;
 }
 
 void ll_clear(linked_list *target) {

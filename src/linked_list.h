@@ -32,14 +32,14 @@ linked_list *create_linkedlist();
 	Creates a new list node with the specified data and prepends it to the front of the linked list.
 */
 
-void add_first(linked_list *target, void* element);
+void ll_add_first(linked_list *target, void* element);
 
 /*
 	Creates a new list node with the data specified by [element] and appends it
 	to the end of the linked list.
 */
 
-void add_last(linked_list *target, void* element);
+void ll_add_last(linked_list *target, void* element);
 
 /*
 	Inserts a new list node with the data specified by [element] and inserts it to
@@ -71,7 +71,7 @@ void* ll_get(linked_list *target, size_t index);
 	Returns the data stored in the list node that the iterator was originally pointing at
 	then moves the iterator to the next node in the linked list.
 
-	Once the iterator reaches the end of the list, it will return NULL and reset itself to the 
+	Once the iterator reaches the end of the list, it will return NULL and reset itself to the
 	head of the linked list.
 */
 
@@ -90,10 +90,16 @@ bool hasNext(linked_list *target);
 void reset(linked_list *target);
 
 /*
-	Deletes the list node specified by [position] and returns the data stored by that list node.
+	Frees the list node specified by [position] and returns the data stored by that list node.
 */
 
 void* ll_remove(linked_list *target, size_t position);
+
+/*
+	Removes and returns the list node.
+*/
+
+list_node *ll_remove_node(linked_list *target, size_t position);
 
 /*
 	Frees every node within the linkedlist. Sets head, tail, and iterator to null. Sets size to 0.
