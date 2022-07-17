@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "stack.h"
 
 static const int DEFAULT_CAPACITY = 10;
@@ -31,6 +30,7 @@ stack *create_stack(size_t initial_capacity) {
 	}
 	s->size = 0;
 	s->capacity = initial_capacity;
+	s->elements = mem;
 	return s;
 }
 
@@ -55,7 +55,7 @@ void *pop(stack* target) {
 		return NULL;
 	}
 	--(target->size);
-	return target->elements[target->size - 1];
+	return target->elements[target->size];
 }
 
 size_t s_size(stack* target) {

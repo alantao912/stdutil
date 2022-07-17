@@ -20,11 +20,11 @@ typedef struct bmp_image {
 
 bmp_image openImageBMP(const char *path);
 
-pixel* getPixelAt(bmp_image *image, unsigned int col, unsigned int row);
+pixel* pixel_at(bmp_image *image, unsigned int col, unsigned int row);
 
-bool save_ImageBMP(bmp_image *image, const char *location);
+bool save_bmp_image(bmp_image *image, const char *location);
 
-void dispose_ImageBMP(bmp_image *image);
+void dispose_bmp_image(bmp_image *image);
 
 bmp_image convolution(bmp_image *image, struct fMatrix *kernel);
 

@@ -52,7 +52,7 @@ typedef struct hashmap {
 	It is up to the programmer to specify a function that returns a boolean which compares keys.
 */
 
-hashmap create_HashMap(size_t initial_capacity, float lf);
+hashmap create_hashmap(size_t initial_capacity, float lf);
 
 /*
 	Puts a specified key-value pair into the hashmap, returns the associated value if the key already exists, null otherwise.
@@ -76,13 +76,13 @@ void* hm_get(hashmap *map, void *key);
 	Returns true if a specified key is contained in the hashmap, false otherwise.
 */
 
-bool hm_containsKey(hashmap *map, void *key);
+bool hm_contains_key(hashmap *map, void *key);
 
 /*
 	Returns an ArrayList of all keys stored in the hashmap
 */
 
-struct arraylist *keySet(hashmap *map);
+struct arraylist *key_set(hashmap *map);
 
 /*
 	Returns an ArrayList of all values stored in the HashMap
@@ -92,7 +92,7 @@ struct arraylist *values(hashmap *map);
 
 /*
 	Computes the hash of input "key" using the multiplicative hashing formula: h(K) = floor(aK mod W / (W/M)),
-	where a and W are relatively prime and M = UINT_MAX, and a is a large number with random distribution of 0s and 1s. 
+	where a and W are relatively prime and M = UINT_MAX, and a is a large number with random distribution of 0s and 1s.
 	Generates values between [0, M - 1].
 */
 

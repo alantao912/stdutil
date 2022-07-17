@@ -1,5 +1,3 @@
-#include <stddef.h>
-#include <stdlib.h>
 #include "priority_queue.h"
 
 priority_queue *create_PriorityQueue(size_t capacity) {
@@ -11,7 +9,7 @@ static void downheap(priority_queue *pq, size_t index) {
 	if (index > pq->size / 2) {
 		return;
 	}
-	
+
 	void *current = pq->data[index], *leftChild = pq->data[2 * index], *rightChild = pq->data[2 * index + 1];
 	int leftDifference = pq->comparator(current, leftChild), rightDifference = 0;
 
@@ -91,13 +89,13 @@ bool pq_add(priority_queue *queue, void *data) {
 		if (!new_array) {
 			return false;
 		}
-		
+
 		size_t i;
-		
+
 		for (i = 1; i <= queue->size; ++i) {
 			new_array[i] = queue->data[i];
 		}
-		
+
 		for (; i < queue->capacity; ++i) {
 			new_array[i] = NULL;
 		}

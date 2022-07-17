@@ -2,7 +2,7 @@
 
 static bool resize(struct set *set) {
 	size_t new_capacity = 2 * set->capacity + 1;
-	struct SetEntry *new_array = (struct SetEntry*) malloc(new_capacity * sizeof(struct SetEntry));
+	struct set_entry *new_array = (struct set_entry*) malloc(new_capacity * sizeof(struct set_entry));
 
 	if (!new_array) {
 		return false;
@@ -12,13 +12,11 @@ static bool resize(struct set *set) {
 		new_array[i].data = NULL;
 		new_array[i].removed = false;
 	}
-	
+
 	size_t i = 0, j = 0;
 	while (i < set->capacity && j < set->cardinality) {
 		if (set->data[i].data) {
-			if (set->data[i].removed) {
-				free(set->data[i].data);
-			} else {
+			if (!set->data[i].removed) {
 				size_t index = set->hash_function(set->data[i].data) % new_capacity;
 				while (new_array[index].data) {
 					++index;
@@ -36,12 +34,12 @@ static bool resize(struct set *set) {
 	return true;
 }
 
-struct set *create_Set(size_t initial_capacity) {
+struct set *create_set(size_t initial_capacity) {
 	struct set *set = (struct set *) malloc(sizeof(struct set));
 	if (!set) {
 		return NULL;
 	}
-	set->data = (struct SetEntry *) malloc(initial_capacity * sizeof(struct SetEntry));
+	set->data = (struct set_entry *) malloc(initial_capacity * sizeof(struct set_entry));
 
 	if (!set->data) {
 		free(set);
@@ -64,19 +62,19 @@ bool set_add(struct set *set, void *element) {
 	if (!element) {
 		return false;
 	}
-	
+
 	if ((float) (set->cardinality + 1) / set->capacity > set->lf && !resize(set)) {
 		/* OOM returns false */
 		return false;
 	}
-	
+
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity, removedIndex;
 	bool foundRemoved = false;
 
 	while (i < set->capacity && (!foundRemoved || j < set->cardinality)) {
-		
+
 		if (!set->data[index].data) {
-			
+
 			if (foundRemoved) {
 				set->data[removedIndex].data = element;
 				set->data[removedIndex].removed = false;
@@ -86,7 +84,7 @@ bool set_add(struct set *set, void *element) {
 			++set->cardinality;
 			return true;
 		} else if (set->comparator(element, set->data[index].data)) {
-			
+
 			if (!set->data[index].removed) {
 				return false;
 			} else if (foundRemoved) {
@@ -115,7 +113,7 @@ void *set_remove(struct set *set, void *element) {
 	if (!element) {
 		return NULL;
 	}
-	
+
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity;
 
 	while (i < set->capacity && j < set->cardinality) {
@@ -143,9 +141,9 @@ bool set_contains(struct set *set, void *element) {
 	if (!element) {
 		return false;
 	}
-	
+
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity;
-	
+
 	while (i < set->capacity && j < set->cardinality) {
 		if (!set->data[index].data) {
 			return false;

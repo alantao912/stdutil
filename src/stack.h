@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "arraylist.h"
 
 typedef struct stack {

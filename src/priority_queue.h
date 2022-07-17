@@ -2,6 +2,8 @@
 #define STDUTIL_PRIORITYQUEUE_H
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
 
 typedef struct priority_queue {
 	void **data;

@@ -7,17 +7,17 @@
 #include <stdlib.h>
 #include "hashmap.h"
 
-struct SetEntry {
+struct set_entry {
 	void *data;
 	bool removed;
 };
 
 typedef struct set {
 
-	/* Backing array for the elements in the set. */	
+	/* Backing array for the elements in the set. */
 
-	struct SetEntry *data;
-	
+	struct set_entry *data;
+
 	/*
 		Number of elements within the set
 	*/
@@ -46,7 +46,7 @@ typedef struct set {
 	*/
 
 	bool (*comparator)(const void *l_operand, const void *r_operand);
-	
+
 	/*
 		Load factor of the set, value between 0 and 1. Resizes the backing array of the set when size / capacity > lf
 	*/
@@ -59,7 +59,7 @@ typedef struct set {
 	Initializes an empty set with the specified initial capacity using default hash function and comparator.
 */
 
-struct set *create_Set(size_t initial_capacity);
+struct set *create_set(size_t initial_capacity);
 
 /*
 	Adds an element to the set. If the element was already present in the set, this function will leave the set unchanged and return false.
@@ -72,7 +72,7 @@ bool set_add(struct set *set, void *element);
 
 /*
 	Removes an element from the set. If the element is present within the set, removes it and returns a pointer to the data it stored.
-	If the element is not present within the set, leaves set unchanged and returns NULL.	
+	If the element is not present within the set, leaves set unchanged and returns NULL.
 
 	Returns NULL if specified element is NULL.
 */

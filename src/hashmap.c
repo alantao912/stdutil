@@ -26,7 +26,7 @@ static void resize(hashmap *map) {
 	map->capacity = new_capacity;
 }
 
-hashmap create_HashMap(size_t initial_capacity, float lf) {
+hashmap create_hashmap(size_t initial_capacity, float lf) {
 	hashmap hm;
 	hm.table = (map_entry**) malloc(initial_capacity * sizeof(map_entry*));
 	hm.capacity = initial_capacity;
@@ -38,7 +38,7 @@ hashmap create_HashMap(size_t initial_capacity, float lf) {
 }
 
 void* hm_put(hashmap *map, void *key, void *value) {
-	
+
 	if (((float) map->size + 1) / map->capacity > map->load_factor) {
 		resize(map);
 	}
@@ -116,7 +116,7 @@ void* hm_remove(hashmap *map, void *key) {
 		++index;
 		index = index % map->capacity;
 	}
-	return NULL;	
+	return NULL;
 }
 
 void* hm_get(hashmap *map, void *key) {
@@ -140,11 +140,11 @@ void* hm_get(hashmap *map, void *key) {
 	return NULL;
 }
 
-bool hm_containsKey(hashmap *map, void *key) {
+bool hm_contains_key(hashmap *map, void *key) {
 	return hm_get(map, key) != NULL;
 }
 
-arraylist *keySet(hashmap *map) {
+arraylist *keyset(hashmap *map) {
 	arraylist *keySet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
