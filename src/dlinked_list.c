@@ -82,8 +82,42 @@ bool dll_add_last(dlinked_list *target, void* element) {
     return true;
 }
 
-bool dll_addAt(dlinked_list *target, size_t position, void *element) {
+bool dll_add_at(dlinked_list *target, size_t position, void *element) {
+    if (position < 0 || position > target->size) {
+        return false;
+    }
 
+    dlist_node *node = (dlist_node *) malloc(sizeof(dlist_node));
+    if (!node) {
+        return false;
+    }
+    node->data = element;
+
+    dlist_node **iterator, *prev = NULL;
+    if (position < target->size / 2) {
+        iterator = &(target->head);
+        for (size_t i = 0; i < position; ++i) {
+            prev = *iterator;
+            iterator = &((*iterator)->next);
+        }
+        node->prev = prev;
+        node->next = (*iterator);
+        *iterator = node;
+    } else {
+        iterator = &(target->tail);
+        for (size_t i = target->size; i > position; --i) {
+            prev = *iterator;
+            iterator = &((*iterator)->prev);
+        }
+        node->next = prev;
+        node->prev = (*iterator);
+        *iterator = node;
+
+        if (!target->head) {
+            target->head = node;
+        }
+    }
+    return true;
 }
 
 void* dll_set(dlinked_list *target, size_t position, void *element) {

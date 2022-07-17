@@ -17,13 +17,13 @@ typedef struct dlinked_list {
 
 dlinked_list *array_to_dlinkedlist(void **array, size_t size);
 
-dlinked_list *create_linkedlist();
+dlinked_list *create_dlinkedlist();
 
 bool dll_add_first(dlinked_list *target, void* element);
 
-void dll_add_last(dlinked_list *target, void* element);
+bool dll_add_last(dlinked_list *target, void* element);
 
-void dll_addAt(dlinked_list *target, size_t position, void *element);
+bool dll_add_at(dlinked_list *target, size_t position, void *element);
 
 void* dll_set(dlinked_list *target, size_t position, void *element);
 

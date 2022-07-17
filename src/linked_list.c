@@ -47,7 +47,7 @@ void ll_add_last(linked_list *target, void *element) {
 	++target->size;
 }
 
-void ll_addAt(linked_list *target, size_t position, void *element) {
+void ll_add_at(linked_list *target, size_t position, void *element) {
 	if (position > target->size) {
 		return;
 	}

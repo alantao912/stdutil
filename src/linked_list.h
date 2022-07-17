@@ -46,7 +46,7 @@ void ll_add_last(linked_list *target, void* element);
 	the position in the linked list specified by [position]
 */
 
-void ll_addAt(linked_list *target, size_t position, void* element);
+void ll_add_at(linked_list *target, size_t position, void* element);
 
 /*
 	Overwrites the data in the list node specified by [position] with the new
