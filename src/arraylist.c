@@ -42,7 +42,7 @@ bool al_add(arraylist *target, void *element) {
 	}
 	target->elements[target->size] = element;
 	++(target->size);
-	return true;	
+	return true;
 }
 
 bool al_addAt(arraylist *target, size_t position, void *element) {
@@ -56,14 +56,6 @@ bool al_addAt(arraylist *target, size_t position, void *element) {
 	target->elements[position] = element;
 	++target->size;
 	return true;
-}
-
-size_t al_size(arraylist* target) {
-	return target->size;
-}
-
-size_t al_capacity(arraylist* target) {
-	return target->capacity;
 }
 
 bool al_ensure_capacity(arraylist* target, size_t new_capacity) {
@@ -138,9 +130,9 @@ static void quicksort(arraylist *arr, size_t start, size_t end, int (*comparator
 	swap = arr->elements[j];
 	arr->elements[j] = arr->elements[start];
 	arr->elements[start] = swap;
-	
+
 	quicksort(arr, start, j, comparator);
-	quicksort(arr, j + 1, end, comparator);	
+	quicksort(arr, j + 1, end, comparator);
 }
 
 void sort(arraylist *target, int (*comparator)(const void *cmpl, const void *cmpr)) {

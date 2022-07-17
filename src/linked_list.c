@@ -98,7 +98,7 @@ void *ll_get(linked_list *target, size_t index) {
 	return iterator->element;
 }
 
-void *next(linked_list *target) {
+void *ll_next(linked_list *target) {
 	void *ret = NULL;
 	if (target->iterator) {
 		ret = target->iterator->element;
@@ -110,11 +110,11 @@ void *next(linked_list *target) {
 	return ret;
 }
 
-bool hasNext(linked_list *target) {
-	return !target->iterator || target->iterator->next;
+bool ll_has_next(linked_list *target) {
+	return target->iterator != NULL;
 }
 
-void reset(linked_list *target) {
+void ll_reset(linked_list *target) {
 	target->iterator = target->head;
 }
 

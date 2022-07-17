@@ -10,7 +10,7 @@
 
 /*
 	The 'ArrayList.h' and 'ArrayList.c' files provide the declarations and implementations of
-	a generic, dynamically sized, array.  
+	a generic, dynamically sized, array.
 
 */
 
@@ -40,20 +40,6 @@ bool al_add(arraylist *target, void *element);
 */
 
 bool al_addAt(arraylist *target, size_t position, void *element);
-
-/*
-	Returns the number of elements in the ArrayList.
-*/
-
-size_t al_size(arraylist *target);
-
-/*
-	Returns the available capacity of the ArrayList. If the size is equal to the capacity
-	and another element is added to the ArrayList, the ArrayList will resize to capacity + 1
-	and accomodate the new element.
-*/
-
-size_t al_capacity(arraylist *target);
 
 /*
 	Ensures that the ArrayList must be able to contain [new_capacity] number of elements.

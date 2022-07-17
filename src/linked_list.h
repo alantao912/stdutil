@@ -75,19 +75,19 @@ void* ll_get(linked_list *target, size_t index);
 	head of the linked list.
 */
 
-void* next(linked_list *target);
+void* ll_next(linked_list *target);
 
 /*
 	Returns true if the iterator is not pointing to the last element of the linked list
 */
 
-bool hasNext(linked_list *target);
+bool ll_has_next(linked_list *target);
 
 /*
 	Resets the iterator to the head of the linked list.
 */
 
-void reset(linked_list *target);
+void ll_reset(linked_list *target);
 
 /*
 	Frees the list node specified by [position] and returns the data stored by that list node.

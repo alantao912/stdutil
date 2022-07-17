@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "arraylist_tests.h"
 #include "stack_tests.h"
 #include "../src/dlinked_list.h"
@@ -17,10 +18,5 @@ int main(int argc, char *argv[]) {
     test_stack_peek();
     test_stack_pop();
     test_stack_ensure_capacity();
-    dlinked_list *dll = create_dlinkedlist();
-    printf("dll size: %d\n", dll->size);
-    if (!(dll->head) && !(dll->tail)) {
-        printf("Head and tail are both null!\n");
-    }
     return 0;
 }

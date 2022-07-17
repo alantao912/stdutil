@@ -27,15 +27,13 @@ bool dll_add_at(dlinked_list *target, size_t position, void *element);
 
 void* dll_set(dlinked_list *target, size_t position, void *element);
 
-size_t dll_size(dlinked_list *target);
-
 void* dll_get(dlinked_list *target, size_t index);
 
-void* next(dlinked_list *target);
+void* dll_next(dlinked_list *target);
 
-bool hasNext(dlinked_list *target);
+bool dll_has_next(dlinked_list *target);
 
-void reset(dlinked_list *target);
+void dll_reset(dlinked_list *target);
 
 void* dll_remove(dlinked_list *target, size_t position);
 
