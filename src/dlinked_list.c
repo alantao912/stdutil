@@ -190,6 +190,40 @@ void *dll_remove(dlinked_list *target, size_t position) {
     return removed_data;
 }
 
+void *dll_remove_first(dlinked_list *target) {
+    if (target->size == 0) {
+        return NULL;
+    }
+    dlist_node *to_remove = target->head;
+    target->head = target->head->next;
+    if (!target->head) {
+        target->tail = NULL;
+    } else {
+        target->head->prev = NULL;
+    }
+    void *removed_data = to_remove->data;
+    free(to_remove);
+    --target->size;
+    return removed_data;
+}
+
+void *dll_remove_last(dlinked_list *target) {
+    if (target->size == 0) {
+        return NULL;
+    }
+    dlist_node *to_remove = target->tail;
+    target->tail = target->tail->prev;
+    if (!target->tail) {
+        target->head = NULL;
+    } else {
+        target->tail->next = NULL;
+    }
+    void *removed_data = to_remove->data;
+    free(to_remove);
+    --target->size;
+    return removed_data;
+}
+
 dlist_node *dll_remove_node(dlinked_list *target, size_t position) {
     if (position < 0 || position >= target->size) {
         return NULL;

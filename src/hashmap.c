@@ -26,14 +26,22 @@ static void resize(hashmap *map) {
 	map->capacity = new_capacity;
 }
 
-hashmap create_hashmap(size_t initial_capacity, float lf) {
-	hashmap hm;
-	hm.table = (map_entry**) malloc(initial_capacity * sizeof(map_entry*));
-	hm.capacity = initial_capacity;
-	hm.size = 0;
-	hm.load_factor = lf;
-	hm.hash_function = &default_hash_function;
-	hm.comparator = &default_comparator;
+hashmap *create_hashmap(size_t initial_capacity, float lf) {
+	hashmap *hm = (hashmap *) malloc(sizeof(hashmap));
+	if (!hm) {
+		return NULL;
+	}
+
+	hm->table = (map_entry**) malloc(initial_capacity * sizeof(map_entry*));
+	if (!(hm->table)) {
+		free(hm);
+		return NULL;
+	}
+	hm->capacity = initial_capacity;
+	hm->size = 0;
+	hm->load_factor = lf;
+	hm->hash_function = &default_hash_function;
+	hm->comparator = &default_comparator;
 	return hm;
 }
 

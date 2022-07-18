@@ -16,8 +16,7 @@ typedef struct map_entry {
 
 typedef struct hashmap {
 	map_entry **table;
-	size_t capacity;
-	size_t size;
+	size_t capacity, size;
 	float load_factor;
 
 	/*
@@ -52,7 +51,7 @@ typedef struct hashmap {
 	It is up to the programmer to specify a function that returns a boolean which compares keys.
 */
 
-hashmap create_hashmap(size_t initial_capacity, float lf);
+hashmap *create_hashmap(size_t initial_capacity, float lf);
 
 /*
 	Puts a specified key-value pair into the hashmap, returns the associated value if the key already exists, null otherwise.
