@@ -44,7 +44,6 @@ void *cache_put(lru_cache *cache, void *element) {
         if (cache->dll->size + 1 > cache->capacity) {
             removed_key = dll_remove_last(cache->dll);
             hm_remove(cache->node_map, removed_key);
-            printf("removing lru!\n");
         }
         dll_add_first(cache->dll, element);
         hm_put(cache->node_map, element, cache->dll->head);
