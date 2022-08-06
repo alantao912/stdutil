@@ -57,19 +57,19 @@ hashmap *create_hashmap(size_t initial_capacity, float lf);
 	Puts a specified key-value pair into the hashmap, returns the associated value if the key already exists, null otherwise.
 */
 
-void* hm_put(hashmap *map, void *key, void *value);
+void *hm_put(hashmap *map, void *key, void *value);
 
 /*
 	Removes the MapEntry with specified key, returns the value formerly stored there, null if key does not exist.
 */
 
-void* hm_remove(hashmap *map, void *key);
+void *hm_remove(hashmap *map, void *key);
 
 /*
 	Returns the value associated with a specified key, NULL if the hashmap does not contain the key.
 */
 
-void* hm_get(hashmap *map, void *key);
+void *hm_get(hashmap *map, void *key);
 
 /*
 	Returns true if a specified key is contained in the hashmap, false otherwise.
@@ -81,13 +81,13 @@ bool hm_contains_key(hashmap *map, void *key);
 	Returns an ArrayList of all keys stored in the hashmap
 */
 
-struct arraylist *key_set(hashmap *map);
+arraylist *key_set(hashmap *map);
 
 /*
 	Returns an ArrayList of all values stored in the HashMap
 */
 
-struct arraylist *values(hashmap *map);
+arraylist *values(hashmap *map);
 
 /*
 	Computes the hash of input "key" using the multiplicative hashing formula: h(K) = floor(aK mod W / (W/M)),
