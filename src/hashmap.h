@@ -81,13 +81,21 @@ bool hm_contains_key(hashmap *map, void *key);
 	Returns an ArrayList of all keys stored in the hashmap
 */
 
+<<<<<<< HEAD
 arraylist *hm_key_set(hashmap *map);
+=======
+arraylist *key_set(hashmap *map);
+>>>>>>> 4697ad243efe13f964b952275e6c694423c00be7
 
 /*
 	Returns an ArrayList of all values stored in the HashMap
 */
 
+<<<<<<< HEAD
 arraylist *hm_values(hashmap *map);
+=======
+arraylist *values(hashmap *map);
+>>>>>>> 4697ad243efe13f964b952275e6c694423c00be7
 
 /*
 	Computes the hash of input "key" using the multiplicative hashing formula: h(K) = floor(aK mod W / (W/M)),
