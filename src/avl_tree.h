@@ -117,24 +117,24 @@ void tree_delete(tree *t);
 	Returns an arraylist of data stored in the tree from a preorder traversal.
 */
 
-struct arraylist *preorder(tree *t);
+arraylist *preorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from an inorder traversal.
 */
 
-struct arraylist *inorder(tree *t);
+arraylist *inorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from a postorder traversal.
 */
 
-struct arraylist *postorder(tree *t);
+arraylist *postorder(tree *t);
 
 /*
 	Returns an arraylist of data stored in the tree from a levelorder traversal.
 */
 
-struct arraylist *levelorder(tree *t);
+arraylist *levelorder(tree *t);
 
 #endif

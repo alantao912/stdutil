@@ -1,8 +1,11 @@
 #include "hashmap.h"
 
-static void resize(hashmap *map) {
+static bool resize(hashmap *map) {
 	size_t new_capacity = 2 * map->capacity + 1;
 	map_entry **new_table = (map_entry**) calloc(new_capacity, sizeof(map_entry*));
+	if (!new_table) {
+		return false;
+	}
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
 		if (map->table[i]) {
@@ -24,6 +27,7 @@ static void resize(hashmap *map) {
 	free(map->table);
 	map->table = new_table;
 	map->capacity = new_capacity;
+	return true;
 }
 
 hashmap *create_hashmap(size_t initial_capacity, float lf) {
@@ -32,7 +36,7 @@ hashmap *create_hashmap(size_t initial_capacity, float lf) {
 		return NULL;
 	}
 
-	hm->table = (map_entry**) malloc(initial_capacity * sizeof(map_entry*));
+	hm->table = (map_entry**) calloc(initial_capacity, sizeof(map_entry*));
 	if (!(hm->table)) {
 		free(hm);
 		return NULL;
@@ -46,9 +50,8 @@ hashmap *create_hashmap(size_t initial_capacity, float lf) {
 }
 
 void* hm_put(hashmap *map, void *key, void *value) {
-
-	if (((float) map->size + 1) / map->capacity > map->load_factor) {
-		resize(map);
+	if ((((float) (map->size + 1)) / map->capacity > map->load_factor) && !resize(map)) {
+		return NULL;
 	}
 
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity, removedIndex;
@@ -152,7 +155,7 @@ bool hm_contains_key(hashmap *map, void *key) {
 	return hm_get(map, key) != NULL;
 }
 
-arraylist *keyset(hashmap *map) {
+arraylist *hm_key_set(hashmap *map) {
 	arraylist *keySet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
@@ -165,7 +168,7 @@ arraylist *keyset(hashmap *map) {
 	return keySet;
 }
 
-arraylist *values(hashmap *map) {
+arraylist *hm_values(hashmap *map) {
 	arraylist *valueSet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
