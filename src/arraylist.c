@@ -7,7 +7,7 @@ static bool resize(arraylist *target, size_t new_capacity) {
 	if (!new_mem) {
 		return false;
 	}
-	memcpy(new_mem, target->elements, sizeof(void *) * new_capacity);
+	memcpy(new_mem, target->elements, sizeof(void *) * target->size);
 	free(target->elements);
 	target->elements = new_mem;
 	target->capacity = new_capacity;
@@ -45,7 +45,7 @@ bool al_add(arraylist *target, void *element) {
 	return true;
 }
 
-bool al_addAt(arraylist *target, size_t position, void *element) {
+bool al_add_at(arraylist *target, size_t position, void *element) {
 	if (position > target->size || (target->size >= target->capacity && !resize(target, 2 * target->capacity))) {
 		return false;
 	}

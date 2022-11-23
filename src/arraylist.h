@@ -39,7 +39,7 @@ bool al_add(arraylist *target, void *element);
 	must be less than the ArrayList's size.
 */
 
-bool al_addAt(arraylist *target, size_t position, void *element);
+bool al_add_at(arraylist *target, size_t position, void *element);
 
 /*
 	Ensures that the ArrayList must be able to contain [new_capacity] number of elements.

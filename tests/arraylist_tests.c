@@ -154,7 +154,7 @@ bool test_al_addAt() {
         arraylist *list = create_arraylist(6);
         al_add(list, Integer(3));
         al_add(list, Integer(4));
-        bool status = al_addAt(list, 1, Integer(5));
+        bool status = al_add_at(list, 1, Integer(5));
 
         int_assert_equal(list->size, 3, 2);
         bool_assert_equal(status, true, 3);
@@ -162,16 +162,16 @@ bool test_al_addAt() {
         int correct_values[] = {3, 5, 4, -1, -1, -1, -1};
         int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
 
-        status = al_addAt(list, 3, Integer(9));
+        status = al_add_at(list, 3, Integer(9));
         bool_assert_equal(status, true, 3);
         int_assert_equal(list->size, 4, 2);
 
         correct_values[3] = 9;
         int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
 
-        al_addAt(list, 0, Integer(-3));
-        al_addAt(list, 0, Integer(-4));
-        al_addAt(list, 0, Integer(-5));
+        al_add_at(list, 0, Integer(-3));
+        al_add_at(list, 0, Integer(-4));
+        al_add_at(list, 0, Integer(-5));
 
         correct_values[0] = -5;
         correct_values[1] = -4;
@@ -185,7 +185,7 @@ bool test_al_addAt() {
         int_assert_equal(list->capacity, 12, 4);
         int_array_assert_equal((int **) list->elements, correct_values, list->size, 1);
 
-        status = al_addAt(list, 999, Integer(10));
+        status = al_add_at(list, 999, Integer(10));
         bool_assert_equal(status, false, 5);
 
         printf("\x1b[32m passed!\x1b[0m\n\n");

@@ -1,6 +1,7 @@
 #ifndef UTIL_QUEUE_H
 #define UTIL_QUEUE_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,13 +17,13 @@ queue *create_queue(size_t initialCapacity);
 	Adds an element to the back of the queue.
 */
 
-void enqueue(queue *target, void *element);
+bool enqueue(queue *target, void *element);
 
 /*
 	Removes an element from the front of the queue.
 */
 
-void* dequeue(queue *target);
+void *dequeue(queue *target);
 
 /*
 	Removes all data from queue.

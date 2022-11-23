@@ -17,22 +17,27 @@ queue *create_queue(size_t initialCapacity) {
 	return q;
 }
 
-void enqueue(queue *target, void *element) {
-	if (target->size < target->capacity) {
-		target->data[(target->front + target->size) % target->capacity] = element;
-	} else {
-		void **new = (void **) malloc(2 * target->capacity * sizeof(void *));
-		size_t i;
-		for (i = 0; i < target->size; ++i) {
-			new[i] = target->data[(target->front + i) % target->capacity];
-		}
-		new[i] = element;
-		free(target->data);
-		target->data = new;
-		target->front = 0;
-		target->capacity *= 2;
+static bool resize(queue *target) {
+	void **new_mem = (void **) malloc(2 * target->capacity * sizeof(void *));
+	if (!new_mem) {
+		return false;
 	}
+	for (size_t i = 0; i < target->size; ++i) {
+		new_mem[i] = target->data[(i + target->front) % target->capacity];
+	}
+	free(target->data);
+	target->data = new_mem;
+	target->capacity = 2 * target->capacity;
+	return true;
+}
+
+void enqueue(queue *target, void *element) {
+	if (target->size >= target->capacity && !resize(target)) {
+		return false;
+	}
+	target->data[(target->front + target->size) % target->capacity] = element;
 	++target->size;
+	return true;
 }
 
 void *dequeue(queue *target) {
