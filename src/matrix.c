@@ -41,7 +41,6 @@ fMatrix fMatrix_multiply(fMatrix lmat, fMatrix rmat) {
 		}
 		matrix.rows = lmat.rows;
 		matrix.cols = rmat.cols;
-
 		for (size_t i = 0; i < matrix.rows * matrix.cols; ++i) {
 			size_t r = i / matrix.cols, c = i % matrix.cols;
 			float accumulator = 0;
@@ -50,7 +49,6 @@ fMatrix fMatrix_multiply(fMatrix lmat, fMatrix rmat) {
 			}
 			matrix.elements[i] = accumulator;
 		}
-		
 	}
 	return matrix;
 }

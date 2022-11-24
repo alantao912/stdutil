@@ -12,9 +12,9 @@ typedef struct priority_queue {
 	signed char (*comparator) (void *loperand, void *roperand);
 } priority_queue;
 
-priority_queue *create_PriorityQueue(size_t capacity);
+priority_queue *create_priority_queue(size_t capacity, signed char (*comparator) (void *loperand, void *roperand));
 
-priority_queue *heapify(void **data, size_t size);
+priority_queue *heapify(void **data, size_t size, signed char (*comparator) (void *loperand, void *roperand));
 
 bool pq_add(priority_queue *queue, void *data);
 

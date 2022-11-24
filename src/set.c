@@ -70,11 +70,9 @@ bool set_add(struct set *set, void *element) {
 
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity, removedIndex;
 	bool foundRemoved = false;
-
 	while (i < set->capacity && (!foundRemoved || j < set->cardinality)) {
 
 		if (!set->data[index].data) {
-
 			if (foundRemoved) {
 				set->data[removedIndex].data = element;
 				set->data[removedIndex].removed = false;
@@ -84,7 +82,6 @@ bool set_add(struct set *set, void *element) {
 			++set->cardinality;
 			return true;
 		} else if (set->comparator(element, set->data[index].data)) {
-
 			if (!set->data[index].removed) {
 				return false;
 			} else if (foundRemoved) {
@@ -115,7 +112,6 @@ void *set_remove(struct set *set, void *element) {
 	}
 
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity;
-
 	while (i < set->capacity && j < set->cardinality) {
 		if (!set->data[index].data) {
 			return false;
@@ -143,7 +139,6 @@ bool set_contains(struct set *set, void *element) {
 	}
 
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity;
-
 	while (i < set->capacity && j < set->cardinality) {
 		if (!set->data[index].data) {
 			return false;

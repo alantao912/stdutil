@@ -4,7 +4,6 @@ static const int DEFAULT_CAPACITY = 10;
 
 static bool resize(stack *target, size_t new_capacity) {
 	void **new_mem = (void **) malloc(new_capacity * sizeof(void *));
-
 	if (!new_mem) {
 		return false;
 	}
@@ -44,18 +43,17 @@ bool push(stack *target, void *element) {
 }
 
 void *peek(stack *target) {
-	if (target->size == 0) {
+	if (!target->size) {
 		return NULL;
 	}
 	return target->elements[target->size - 1];
 }
 
 void *pop(stack* target) {
-	if (target->size == 0) {
+	if (!target->size) {
 		return NULL;
 	}
-	--(target->size);
-	return target->elements[target->size];
+	return target->elements[--(target->size)];
 }
 
 size_t s_size(stack* target) {
@@ -69,15 +67,11 @@ size_t s_capacity(stack* target) {
 bool s_ensure_capacity(stack* target, size_t new_capacity) {
 	if (new_capacity < target->size) {
 		return false;
-	} else if (resize(target, new_capacity)) {
-		return true;
-	} else {
-		return false;
 	}
+	return resize(target, new_capacity);
 }
 
 void s_clear(stack* target) {
-	memset(target->elements, 0, target->size * sizeof(void *));
 	target->size = 0;
 }
 
@@ -85,5 +79,5 @@ void s_delete(stack *target) {
 	for (size_t i = 0; i < target->size; ++i) {
 		free(target->elements[i]);
 	}
-	s_clear(target);
+	target->size = 0;
 }

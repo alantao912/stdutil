@@ -31,7 +31,7 @@ static bool resize(queue *target) {
 	return true;
 }
 
-void enqueue(queue *target, void *element) {
+bool enqueue(queue *target, void *element) {
 	if (target->size >= target->capacity && !resize(target)) {
 		return false;
 	}
@@ -44,7 +44,6 @@ void *dequeue(queue *target) {
 	void *ret = NULL;
 	if (target->size > 0) {
 		ret = target->data[target->front];
-		target->data[target->front] = NULL;
 		target->front = (++target->front) % target->capacity;
 		--target->size;
 	}
@@ -52,9 +51,6 @@ void *dequeue(queue *target) {
 }
 
 void q_clear(queue *target) {
-	for (size_t i = 0; i < target->size; ++i) {
-		target->data[(i + target->front) % target->capacity] = NULL;
-	}
 	target->front = 0;
 	target->size = 0;
 }
@@ -62,7 +58,6 @@ void q_clear(queue *target) {
 void q_delete(queue *target) {
 	for (size_t i = 0; i < target->size; ++i) {
 		free(target->data[(i + target->front) % target->capacity]);
-		target->data[(i + target->front) % target->capacity] = NULL;
 	}
 	target->front = 0;
 	target->size = 0;

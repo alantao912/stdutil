@@ -1,7 +1,8 @@
 #include "priority_queue.h"
+#include <string.h>
 
-priority_queue *create_PriorityQueue(size_t capacity) {
-	priority_queue *pq = heapify(NULL, 0);
+priority_queue *create_priority_queue(size_t capacity, signed char (*comparator) (void *loperand, void *roperand)) {
+	priority_queue *pq = heapify(NULL, 0, comparator);
 	return pq;
 }
 
@@ -9,18 +10,13 @@ static void downheap(priority_queue *pq, size_t index) {
 	if (index > pq->size / 2) {
 		return;
 	}
-
 	void *current = pq->data[index], *leftChild = pq->data[2 * index], *rightChild = pq->data[2 * index + 1];
 	int leftDifference = pq->comparator(current, leftChild), rightDifference = 0;
-
 	if (rightChild) {
 		rightDifference = pq->comparator(current, rightChild);
 	}
-
 	if (leftDifference > 0 && rightDifference > 0) {
-		// Both leftchild and rightchild are smaller than parent
 		if (pq->comparator(leftChild, rightChild) < 0) {
-			// left child is smaller than rightchild
 			pq->data[2 * index] = current;
 			pq->data[index] = leftChild;
 			downheap(pq, 2 * index);
@@ -40,19 +36,19 @@ static void downheap(priority_queue *pq, size_t index) {
 	}
 }
 
-priority_queue *heapify(void **data, size_t size) {
+priority_queue *heapify(void **data, size_t size, signed char (*comparator) (void *loperand, void *roperand)) {
 	priority_queue *pq = (priority_queue *) malloc(sizeof(priority_queue));
 	if (!pq) {
 		return NULL;
 	}
 	pq->data = (void **) malloc((2 * size + 1) * sizeof(void *));
-
 	if (!pq->data) {
 		free(pq);
 		return NULL;
 	}
 	pq->size = 0;
 	pq->capacity = 2 * size + 1;
+	pq->comparator = comparator;
 
 	size_t j = 1;
 	for (size_t i = 0; i < size; ++i) {
@@ -72,7 +68,6 @@ static void upheap(priority_queue *pq, size_t index) {
 	if (index <= 1) {
 		return;
 	}
-
 	void *parent = pq->data[index / 2];
 	if (pq->comparator(pq->data[index], parent) < 0) {
 		pq->data[index / 2] = pq->data[index];
@@ -84,21 +79,12 @@ static void upheap(priority_queue *pq, size_t index) {
 bool pq_add(priority_queue *queue, void *data) {
 	if (queue->size + 1 >= queue->capacity) {
 		queue->capacity *= 2;
-		void **new_array = (void**) calloc(queue->capacity, sizeof(void *));
-
+		void **new_array = (void **) malloc(queue->capacity * sizeof(void *));
 		if (!new_array) {
 			return false;
 		}
-
-		size_t i;
-
-		for (i = 1; i <= queue->size; ++i) {
-			new_array[i] = queue->data[i];
-		}
-
-		for (; i < queue->capacity; ++i) {
-			new_array[i] = NULL;
-		}
+		memcpy((void *) &(new_array[1]), (void *) &(queue->data[1]), queue->size);
+		free(queue->data);
 		queue->data = new_array;
 	}
 	++queue->size;
@@ -110,7 +96,6 @@ bool pq_add(priority_queue *queue, void *data) {
 void *pq_remove(priority_queue *queue) {
 	void *value = queue->data[1];
 	queue->data[1] = queue->data[queue->size];
-	queue->data[queue->size] = NULL;
 	--queue->size;
 	downheap(queue, 1);
 	return value;
