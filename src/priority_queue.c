@@ -41,13 +41,13 @@ priority_queue *heapify(void **data, size_t size, signed char (*comparator) (voi
 	if (!pq) {
 		return NULL;
 	}
-	pq->data = (void **) malloc((2 * size + 1) * sizeof(void *));
+	pq->capacity = 2 * size + 1;
+	pq->data = (void **) malloc(pq->capacity * sizeof(void *));
 	if (!pq->data) {
 		free(pq);
 		return NULL;
 	}
 	pq->size = 0;
-	pq->capacity = 2 * size + 1;
 	pq->comparator = comparator;
 
 	size_t j = 1;
@@ -101,6 +101,6 @@ void *pq_remove(priority_queue *queue) {
 	return value;
 }
 
-void* pq_peek(priority_queue *queue) {
+void *pq_peek(priority_queue *queue) {
 	return queue->data[1];
 }

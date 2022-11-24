@@ -75,7 +75,6 @@ bmp_image openImageBMP(const char *path)
 		size_t bytes_read = 0;
 		unsigned char *trailer = (unsigned char*) malloc(1 * sizeof(unsigned char));
 
-
 		int byte = fgetc(img);
 		while (byte != EOF) {
 			trailer[bytes_read] = (unsigned char) byte;
@@ -94,7 +93,6 @@ bmp_image openImageBMP(const char *path)
 				image.height = 0;
 				fclose(img);
 				return image;
-
 			}
 			byte = fgetc(img);
 		}
@@ -119,7 +117,7 @@ bool save_bmp_image(bmp_image* image, const char* location) {
 	fwrite(image->file_header, sizeof(unsigned char), FILE_HEADER_SIZE, dest);
 	fwrite(image->bitmap_header, sizeof(unsigned char), *(int*)&image->bitmap_header[0], dest);
 
-	short bpp = *(short*)&image->bitmap_header[14];
+	short bpp = *(short  *) &image->bitmap_header[14];
 
 	size_t padding = ceil(bpp * image->width / 32.0) * 4 - image->width * bpp /  8;
 	unsigned char *buffer = (unsigned char*) malloc(padding * sizeof(unsigned char));
