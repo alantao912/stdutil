@@ -71,7 +71,6 @@ bool set_add(struct set *set, void *element) {
 	size_t i = 0, j = 0, index = set->hash_function(element) % set->capacity, removedIndex;
 	bool foundRemoved = false;
 	while (i < set->capacity && (!foundRemoved || j < set->cardinality)) {
-
 		if (!set->data[index].data) {
 			if (foundRemoved) {
 				set->data[removedIndex].data = element;
@@ -85,12 +84,10 @@ bool set_add(struct set *set, void *element) {
 			if (!set->data[index].removed) {
 				return false;
 			} else if (foundRemoved) {
-				set->data[removedIndex].data = element;
-				set->data[removedIndex].removed = false;
-			} else {
-				set->data[index].data = element;
-				set->data[index].removed = false;
+				index = removedIndex;
 			}
+			set->data[index].data = element;
+			set->data[index].removed = false;
 			++set->cardinality;
 			return true;
 		} else if (set->data[index].removed) {
@@ -100,8 +97,7 @@ bool set_add(struct set *set, void *element) {
 			++j;
 		}
 		++i;
-		++index;
-		index = index % set->capacity;
+		index = ++index % set->capacity;
 	}
 	return false;
 }

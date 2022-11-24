@@ -60,10 +60,10 @@ hashmap *create_hashmap(size_t initial_capacity, float lf);
 void *hm_put(hashmap *map, void *key, void *value);
 
 /*
-	Removes the MapEntry with specified key, returns the value formerly stored there, null if key does not exist.
+	Removes the MapEntry with specified key, returns the key-value pair formerly stored there, null if key does not exist.
 */
 
-void *hm_remove(hashmap *map, void *key);
+map_entry *hm_remove(hashmap *map, void *key);
 
 /*
 	Returns the value associated with a specified key, NULL if the hashmap does not contain the key.
