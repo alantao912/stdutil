@@ -2,20 +2,16 @@
 
 static bool resize(hashmap *map) {
 	size_t new_capacity = 2 * map->capacity + 1;
-	map_entry **new_table = (map_entry *) calloc(new_capacity, sizeof(map_entry *));
+	map_entry *new_table = (map_entry *) calloc(new_capacity, sizeof(map_entry));
 	if (!new_table) {
 		return false;
 	}
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
-		if (map->table[i]) {
-			if (map->table[i]->removed) {
-				free(map->table[i]->key);
-				free(map->table[i]->value);
-				free(map->table[i]);
-			} else {
-				size_t index = map->hash_function(map->table[i]->key) % new_capacity;
-				while (new_table[index]) {
+		if (map->table[i].key) {
+			if (!map->table[i].removed) {
+				size_t index = map->hash_function(map->table[i].key) % new_capacity;
+				while (new_table[index].key) {
 					++index;
 					index = index % new_capacity;
 				}
@@ -57,31 +53,29 @@ void *hm_put(hashmap *map, void *key, void *value) {
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity, removedIndex;
 	bool foundRemoved = false;
 	while (i < map->capacity && (!foundRemoved || j < map->size)) {
-		if (!map->table[index]) {
+		if (!map->table[index].key) {
 			if (foundRemoved) {
 				index = removedIndex;
-			} else if (!(map->table[index] = (map_entry *) malloc(sizeof(map_entry)))) {
-				return NULL;
 			}
-			map->table[index]->key = key;
-			map->table[index]->value = value;
-			map->table[index]->removed = false;
+			map->table[index].key = key;
+			map->table[index].value = value;
+			map->table[index].removed = false;
 			++map->size;
 			return NULL;
-		} else if (map->comparator(key, map->table[index]->key)) {
-			if (!map->table[index]->removed) {
-				void *value = map->table[index]->value;
-				map->table[index]->value = value;
+		} else if (map->comparator(key, map->table[index].key)) {
+			if (!map->table[index].removed) {
+				void *value = map->table[index].value;
+				map->table[index].value = value;
 				return value;
 			} else if (foundRemoved) {
 				index = removedIndex;
 			}
-			map->table[index]->key = key;
-			map->table[index]->value = value;
-			map->table[index]->removed = false;
+			map->table[index].key = key;
+			map->table[index].value = value;
+			map->table[index].removed = false;
 			++map->size;
 			return NULL;
-		} else if (map->table[index]->removed) {
+		} else if (map->table[index].removed) {
 			removedIndex = index;
 			foundRemoved = true;
 		} else {
@@ -96,17 +90,17 @@ void *hm_put(hashmap *map, void *key, void *value) {
 map_entry *hm_remove(hashmap *map, void *key) {
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity;
 	while (i < map->capacity && j < map->size) {
-		if (!map->table[index]) {
+		if (!map->table[index].key) {
 			return NULL;
-		} else if (map->comparator(key, map->table[index]->key)) {
-			if (map->table[index]->removed) {
+		} else if (map->comparator(key, map->table[index].key)) {
+			if (map->table[index].removed) {
 				return NULL;
 			} else {
-				map->table[index]->removed = true;
+				map->table[index].removed = true;
 				--map->size;
-				return map->table[index];
+				return &(map->table[index]);
 			}
-		} else if (!map->table[index]->removed) {
+		} else if (!map->table[index].removed) {
 			++j;
 		}
 		++i;
@@ -119,15 +113,15 @@ map_entry *hm_remove(hashmap *map, void *key) {
 void* hm_get(hashmap *map, void *key) {
 	size_t i = 0, j = 0, index = map->hash_function(key) % map->capacity;
 	while (i < map->capacity && j < map->size) {
-		if (!map->table[index]) {
+		if (!map->table[index].key) {
 			return NULL;
-		} else if (map->comparator(key, map->table[index]->key)) {
-			if (map->table[index]->removed) {
+		} else if (map->comparator(key, map->table[index].key)) {
+			if (map->table[index].removed) {
 				return NULL;
 			} else {
-				return map->table[index]->value;
+				return map->table[index].value;
 			}
-		} else if (!map->table[index]->removed) {
+		} else if (!map->table[index].removed) {
 			++j;
 		}
 		++i;
@@ -145,8 +139,8 @@ arraylist *hm_key_set(hashmap *map) {
 	arraylist *keySet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
-		if (map->table[i] && !map->table[i]->removed) {
-			al_add(keySet, map->table[i]->key);
+		if (map->table[i].key && !map->table[i].removed) {
+			al_add(keySet, map->table[i].key);
 			++j;
 		}
 		++i;
@@ -158,8 +152,8 @@ arraylist *hm_values(hashmap *map) {
 	arraylist *valueSet = create_arraylist(map->size);
 	size_t i = 0, j = 0;
 	while (i < map->capacity && j < map->size) {
-		if (map->table[i] && !map->table[i]->removed) {
-			al_add(valueSet, map->table[i]->value);
+		if (map->table[i].key && !map->table[i].removed) {
+			al_add(valueSet, map->table[i].value);
 			++j;
 		}
 		++i;
@@ -180,21 +174,23 @@ bool default_comparator(const void *key0, const void *key1) {
 
 void hm_clear(hashmap *map) {
 	for (size_t i = 0; i < map->capacity; ++i) {
-		free(map->table[i]);
-		map->table[i] = NULL;
+		void *key = map->table[i].key;
+		if (key && !map->table[i].removed) {
+			free(key);
+			map->table[i].key = NULL;
+		}
 	}
 	map->size = 0;
 }
 
 void hm_delete(hashmap *map) {
 	for (size_t i = 0; i < map->capacity; ++i) {
-		map_entry *current = map->table[i];
-		if (current) {
-			free(current->key);
-			free(current->value);
+		void *key = map->table[i].key;
+		if (key && !map->table[i].removed) {
+			free(key);
+			free(map->table[i].value);
+			map->table[i].key = NULL;
 		}
-		free(current);
-		map->table[i] = NULL;
 	}
 	map->size = 0;
 }

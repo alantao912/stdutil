@@ -15,7 +15,7 @@ typedef struct map_entry {
 } map_entry;
 
 typedef struct hashmap {
-	map_entry **table;
+	map_entry *table;
 	size_t capacity, size;
 	float load_factor;
 
